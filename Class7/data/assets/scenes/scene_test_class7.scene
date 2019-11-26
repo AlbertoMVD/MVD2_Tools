@@ -1,1 +1,1 @@
-{"entities":[{"name":"Sphere001","parent":"Plane001"},{"name":"Plane001"}]}
+{"entities":[{"name":"Sphere001","parent":"Plane001","transform":{"translation":[-33.9857,17.6161,-40.5549],"rotation":[0.707107,0.0,0.0,0.707107],"scale":[1.0,1.0,-1.0]}},{"name":"Plane001","transform":{"translation":[1.50434,0.0,-1.44853],"rotation":[0.707107,0.0,0.0,0.707107],"scale":[1.0,1.0,-1.0]}}]}

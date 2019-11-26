@@ -70,6 +70,19 @@ struct MVDExporter (
 		-- Export all necessary data from transform
 		-- Axis are different from one engine to another
 		-- TO-DO
+		local max2mvd = rotateXMatrix -90
+		local mvd2max = rotateXMatrix 90
+		
+		-- Add support for relative coordinates (parent matrices)
+		local objtransform = obj.transform * max2mvd
+		
+		local obj_pos = obj.pos * max2mvd
+		local obj_rot = objtransform.rotationPart as Quat
+		local obj_scale = obj.scale * max2mvd
+		
+		comp_transform.add "translation" #(obj_pos.x, obj_pos.y, obj_pos.z)
+		comp_transform.add "rotation" #(obj_rot.x, obj_rot.y, obj_rot.z, obj_rot.w)
+		comp_transform.add "scale" #(obj_scale.x, obj_scale.y, obj_scale.z)
 
 		jwrite.add "transform" comp_transform
 
@@ -175,7 +188,7 @@ struct MVDExporter (
 		-- Export base components
 		exportName entity obj
 		exportParent entity obj
-		--exportTransform entity obj
+		exportTransform entity obj
 		--exportRender entity obj
 		--exportLight entity obj 
 		--exportCollider entity obj
