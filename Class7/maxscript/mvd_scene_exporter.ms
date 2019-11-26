@@ -252,7 +252,7 @@ struct MVDExporter (
 		
 		-- ExportTag component to be the last component to be exported.
 		--exportTag entity obj
-		fs.add "entity" entity
+		--fs.add "entity" entity
 		return entity
 	),
 	
