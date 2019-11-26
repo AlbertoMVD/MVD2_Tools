@@ -141,12 +141,31 @@ struct MVDExporter (
 	-- Export the light component
 	fn exportLight jwrite obj = (
 		
-		if (superclassof obj) == Light then (
-			
+		if (superclassof obj) == Light then 
+		(
 			comp_light = MVDJson()
-			-- Export lights by type
-			-- Export properties
-			-- TO-DO
+			if classof obj == TargetDirectionalLight then 
+			(
+				local tgtobj = getnodebyname (obj.name + ".Target")
+				comp_light.add "type" "directional"
+				comp_light.add "range" (distance obj.pos tgtobj.pos)
+				comp_light.add "ortosize" obj.falloff
+			) 
+			else if classof obj == TargetSpot or obj == FreeSpot then
+			(
+				-- TO-DO 
+			)
+			else if classof obj == omnilight then 
+			(
+				-- TO-DO 
+			)
+
+			-- common properties
+			comp_light.add "color" [obj.rgb.r/255, obj.rgb.g/255, obj.rgb.b/255]
+			comp_light.add "intensity" obj.multiplier
+			comp_light.add "shadows" (obj.castShadows as integer)
+			
+			jwrite.add "light" comp_light
 		)
 	),
 	
@@ -225,7 +244,7 @@ struct MVDExporter (
 		exportParent entity obj
 		exportTransform entity obj
 		exportRender entity obj
-		--exportLight entity obj 
+		exportLight entity obj 
 		--exportCollider entity obj
 		
 		-- Export custom components
@@ -233,8 +252,7 @@ struct MVDExporter (
 		
 		-- ExportTag component to be the last component to be exported.
 		--exportTag entity obj
-		
-		--fs.add "entity" entity
+		fs.add "entity" entity
 		return entity
 	),
 	
@@ -323,7 +341,7 @@ struct MVDExporter (
 		
 		messageBox ("Curve SUCCESFULLY exported at location: \n\n" + item_path)	
 	),
-	
+	 
 	-- Check between different type of object generation
 	fn exportItem enodes etype epath eprg = (
 		
