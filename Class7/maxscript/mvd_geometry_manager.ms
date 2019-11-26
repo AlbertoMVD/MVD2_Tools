@@ -111,7 +111,7 @@ struct MaterialManager (
 		fs.add "textures" fs_tex
 		if gen_mat == true then (fs.writeDisk full_path)
 		
-		return short_path
+		return (mats_path + emat.name + ".mtl")
 	)
 )
 

@@ -111,14 +111,14 @@ struct MVDExporter (
 				matMan.gen_tex = gen_tex
 				
 				if classof obj.mat == StandardMaterial then (
-					local output_json = matMan.exportItem obj.mat mats_path
+					local output_json = matMan.exportItem obj.mat (project_path + mats_path)
 					comp_render.add "materials" #(output_json)
 				)
 				else if obj.mat == multimaterial then 
 				(
 					local total_mats = #()
 					for m in obj.mat do (
-						local output_json = matMan.exportItem obj.mat mats_path
+						local output_json = matMan.exportItem obj.mat (project_path + mats_path)
 						append total_mats output_json
 					)
 					

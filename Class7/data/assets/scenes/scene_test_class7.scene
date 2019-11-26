@@ -1,1 +1,1 @@
-{"entities":[]}
+{"entities":[{"name":"Plane001","transform":{"translation":[1.50434,0.0,-1.44853],"rotation":[0.707107,0.0,0.0,0.707107],"scale":[1.0,1.0,-1.0]},"render":{"mesh":"data/assets/meshes/Plane001.obj","materials":["data/assets/materials/mtl_test_material.mtl"]}}]}
