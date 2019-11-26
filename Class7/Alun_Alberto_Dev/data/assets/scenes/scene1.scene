@@ -1,0 +1,81 @@
+{
+	"entities": [{
+			"name": "Box003",
+			"transform": {
+				"translation": [5.0, 1.0, 15.4393],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Box003.obj",
+				"materials": ["data/assets/materials/mtl_default.mtl"]
+			},
+			"tags": ["default"]
+		}, {
+			"name": "Box004",
+			"transform": {
+				"translation": [-6.74219, 1.0, 4.60265],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Box004.obj",
+				"materials": ["data/assets/materials/mtl_default.mtl"]
+			},
+			"tags": ["default"]
+		}, {
+			"name": "Sphere001",
+			"transform": {
+				"translation": [15.3099, 1.0, 0.0207159],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Sphere001.obj",
+				"materials": ["data/assets/materials/mtl_default.mtl"]
+			},
+			"tags": ["default"]
+		}, {
+			"name": "Sphere002",
+			"transform": {
+				"translation": [15.3099, 1.0, 5.77309],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Sphere002.obj",
+				"materials": ["data/assets/materials/mtl_default.mtl"]
+			},
+			"tags": ["default"]
+		}, {
+			"name": "Sphere003",
+			"transform": {
+				"translation": [15.3099, 1.0, -5.7448],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Sphere003.obj",
+				"materials": ["data/assets/materials/mtl_default.mtl"]
+			},
+			"tags": ["default"]
+		}, {
+			"name": "Teapot001",
+			"transform": {
+				"translation": [-4.01735, 1.6568, -4.40491],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Teapot001.obj",
+				"materials": ["data/assets/materials/mtl_default.mtl"]
+			},
+			"tags": ["default"]
+		}, {
+			"name": "Box002",
+			"transform": {
+				"translation": [5.0, 1.0, -5.0],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Box002.obj",
+				"materials": ["data/assets/materials/mtl_default.mtl"]
+			},
+			"tags": ["default"]
+		}
+	]
+}
