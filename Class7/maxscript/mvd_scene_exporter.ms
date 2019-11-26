@@ -31,7 +31,7 @@ struct MVDExporter (
 	-- Export the entity name
 	fn exportName jwrite obj = (
 		
-		-- TO-DO
+		-- Adding the name attribute
 		jwrite.Add "name" obj.name
 	),
 	
@@ -39,6 +39,19 @@ struct MVDExporter (
 	fn exportParent jwrite obj = (
 		
 		-- TO-DO
+		if obj.parent != undefined then (
+			
+			local index = findItem (selection as array) obj.parent
+			 
+			if index != 0 then 
+			(
+				jwrite.Add "parent" obj.parent.name	
+			)
+			else 
+			(
+				messageBox ("Trying to export a children without his parent\n")
+			)
+		)
 	),
 	
 	-- Export the entity prefab
@@ -161,7 +174,7 @@ struct MVDExporter (
 		
 		-- Export base components
 		exportName entity obj
-		--exportParent entity obj
+		exportParent entity obj
 		--exportTransform entity obj
 		--exportRender entity obj
 		--exportLight entity obj 

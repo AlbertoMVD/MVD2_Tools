@@ -1,1 +1,1 @@
-{"entities":[{"name":"Plane001"}]}
+{"entities":[{"name":"Sphere001","parent":"Plane001"},{"name":"Plane001"}]}
