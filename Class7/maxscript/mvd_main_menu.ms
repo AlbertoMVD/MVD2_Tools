@@ -1,5 +1,6 @@
 -- We can include files using filein 
 filein "mvd_utility_managers.ms"
+filein "mvd_scene_exporter.ms"
 
 gc()
 clearListener()
@@ -93,7 +94,52 @@ rollout SBSelection "Selection Tools" width:477 height:252
 --------------------------------------------------------------------------------------------------------------
 rollout SBExport "Export Tools" width:474 height:266
 (
-
+	edittext 'asset_dir' "Asset dir:" pos:[18,17] width:389 height:20 fieldwidth:340 labelOnTop:false align:#left
+	button 'btn_filedialog' "..." pos:[420,17] width:25 height:21 toolTip:"This is a tooltip" align:#left
+	
+	GroupBox 'grp2' "Export Scene" pos:[10,65] width:450 height:153 align:#left
+	progressBar 'progress' "ProgressBar" pos:[11,229] width:449 height:21 color:(color 0 255 0) align:#left
+	button 'btn36' "Button" pos:[158,89] width:2 height:116 align:#left
+	button 'btn39' "Export Selection" pos:[191,176] width:173 height:22 align:#left
+	button 'btn40' "All" pos:[373,176] width:51 height:22 align:#left
+	edittext 'scene_name' "Name" pos:[191,95] width:234 height:19 align:#left
+	checkbox 'chk5' "Generate Colliders" pos:[28,175] width:108 height:14 align:#left
+	checkbox 'chk7' "Generate Textures" pos:[28,155] width:107 height:14 checked:true align:#left
+	checkbox 'chk8' "Generate Materials" pos:[28,136] width:111 height:14 checked:true align:#left
+	checkbox 'chk9' "Rewrite existing files" pos:[307,126] width:120 height:14 checked:true align:#left
+	dropdownList 'ddl1' "Type" pos:[28,86] width:110 height:40 items:#("Scene", "Prefab", "Mesh", "Curve") align:#left
+	
+	on SBExport open do 
+	(
+		scene_name.text = getFileNameFile maxFileName
+		asset_dir.text = getCurrentAssetDir() 
+	)
+	
+	-- Open a file dialog
+	on btn_filedialog pressed do 
+	(
+		dir = getSavePath initialDir:asset_dir.text caption:"Select Folder"
+		if dir != undefined then (
+			asset_dir.text = dir
+		)
+	)
+	
+	-- Export selection
+	on btn39 pressed do 
+	(
+		local obj_selected = selection as array
+		print base_path
+		local scene_exporter = MVDExporter item_name:scene_name.text gen_mat:chk8.state gen_tex:chk7.state gen_col:chk5.state
+		scene_exporter.exportItem obj_selected ddl1.selection asset_dir.text progress
+	)
+	
+	-- Export everything on the scene
+	on btn40 pressed do 
+	(
+		local obj_all = $* -- We get every object on the scene
+		local scene_exporter = MVDExporter item_name:scene_name.text gen_mat:chk8.state gen_tex:chk7.state gen_col:chk5.state
+		scene_exporter.exportItem obj_all ddl1.selection asset_dir.text progress
+	)	
 )
 
 --------------------------------------------------------------------------------------------------------------

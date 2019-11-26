@@ -1,5 +1,4 @@
 filein "mvd_json_exporter.ms"
-filein "mvd_geometry_manager.ms"
 filein "mvd_utils.ms"
 
 -- Global path definitions for each asset data folder
@@ -30,7 +29,7 @@ struct MVDExporter (
 	------------------------------------------------------------
 	
 	-- Export the entity name
-	fn exportName jwrite obj = (
+	/*fn exportName jwrite obj = (
 		
 		-- TO-DO
 	),
@@ -120,9 +119,8 @@ struct MVDExporter (
 		jwrite.add "tags" #("")
 	),
 	
-	/*
-		Add any other necessary custom components here...
-	*/
+		-- Add any other necessary custom components here...
+	
 	
 	------------------------------------------------------------
 	------------------------------------------------------------
@@ -259,7 +257,7 @@ struct MVDExporter (
 		-- Fill here with the data needed from the curve
 		
 		messageBox ("Curve SUCCESFULLY exported at location: \n\n" + item_path)	
-	),
+	),*/
 	
 	-- Check between different type of object generation
 	fn exportItem enodes etype epath eprg = (
@@ -267,16 +265,16 @@ struct MVDExporter (
 		case etype of
 		(
 			1: ( -- Scene
-				exportWorld enodes epath eprg
+				--exportWorld enodes epath eprg
 			)
 			2: ( -- Prefab
-				exportPrefab enodes epath eprg
+				--exportPrefab enodes epath eprg
 			)
 			3: ( -- Mesh
-				exportMesh enodes epath eprg
+				--exportMesh enodes epath eprg
 			)
 			3: ( -- Curve
-				exportCurve enodes epath eprg
+				--exportCurve enodes epath eprg
 			) -- More to be added
 			default: exportWorld enodes epath eprg
 		)
