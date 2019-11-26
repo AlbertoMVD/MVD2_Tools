@@ -29,9 +29,10 @@ struct MVDExporter (
 	------------------------------------------------------------
 	
 	-- Export the entity name
-	/*fn exportName jwrite obj = (
+	fn exportName jwrite obj = (
 		
 		-- TO-DO
+		jwrite.Add "name" obj.name
 	),
 	
 	-- Link the entity to his parent if needed
@@ -160,17 +161,17 @@ struct MVDExporter (
 		
 		-- Export base components
 		exportName entity obj
-		exportParent entity obj
-		exportTransform entity obj
-		exportRender entity obj
-		exportLight entity obj 
-		exportCollider entity obj
+		--exportParent entity obj
+		--exportTransform entity obj
+		--exportRender entity obj
+		--exportLight entity obj 
+		--exportCollider entity obj
 		
 		-- Export custom components
 		-- Add other custom components you need here!
 		
 		-- ExportTag component to be the last component to be exported.
-		exportTag entity obj
+		--exportTag entity obj
 		
 		--fs.add "entity" entity
 		return entity
@@ -205,8 +206,11 @@ struct MVDExporter (
 			local eamount = 0
 			local entities = #()
 			local enode = undefined
+			
+			-- Loop through all the nodes
 			for obj in enodes do (
 				
+				-- for each node, export it as an entity
 				enode = exportEntity obj	
 				
 				append entities enode
@@ -257,7 +261,7 @@ struct MVDExporter (
 		-- Fill here with the data needed from the curve
 		
 		messageBox ("Curve SUCCESFULLY exported at location: \n\n" + item_path)	
-	),*/
+	),
 	
 	-- Check between different type of object generation
 	fn exportItem enodes etype epath eprg = (
@@ -265,7 +269,7 @@ struct MVDExporter (
 		case etype of
 		(
 			1: ( -- Scene
-				--exportWorld enodes epath eprg
+				exportWorld enodes epath eprg
 			)
 			2: ( -- Prefab
 				--exportPrefab enodes epath eprg
