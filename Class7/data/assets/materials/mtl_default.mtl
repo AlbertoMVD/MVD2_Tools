@@ -1,0 +1,6 @@
+{
+	"tech": "phong.tech",
+	"textures": {
+		"diffuse": "data/assets/textures/default.png"
+	}
+}

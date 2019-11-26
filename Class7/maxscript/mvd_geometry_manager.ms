@@ -37,9 +37,6 @@ struct MeshManager
 	)
 )
 
-meshMan = MeshManager()
-meshMan.exportItem $Box001 "D:\Users\Vostek\Documents\MVD2019\MVD2_Tools\Class6\assets\models\\"
-
 -- Class used to export materials and textures
 struct MaterialManager (
 	
@@ -66,11 +63,11 @@ struct MaterialManager (
 	),
 	
 	-- Export the material given, parameters and texture definition
-	fn exportItem emat = (
+	fn exportItem emat epath = (
 		
 		fs.add "tech" tech
 		fs.add "shadows" (shadows as integer)
-		local short_path = (mats_path + emat.name + ".mtl")
+		local short_path = (epath + emat.name + ".mtl")
 		local full_path = (short_path)
 		
 		-- Atleast default diffuse needed
@@ -117,11 +114,6 @@ struct MaterialManager (
 		return short_path
 	)
 )
-
-mats_path = "D:\Users\Vostek\Documents\MVD2019\MVD2_Tools\Class6\assets\materials\\"
-tex_path = "D:\Users\Vostek\Documents\MVD2019\MVD2_Tools\Class6\assets\\textures\\"
-matMan = MaterialManager()
-matMan.exportItem ($Box001.material) 
 
 -- Collider manager
 -- Used to generate collider meshes and types

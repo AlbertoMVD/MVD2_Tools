@@ -1,4 +1,5 @@
 filein "mvd_json_exporter.ms"
+filein "mvd_geometry_manager.ms"
 filein "mvd_utils.ms"
 
 -- Global path definitions for each asset data folder
@@ -69,7 +70,6 @@ struct MVDExporter (
 
 		-- Export all necessary data from transform
 		-- Axis are different from one engine to another
-		-- TO-DO
 		local max2mvd = rotateXMatrix -90
 		local mvd2max = rotateXMatrix 90
 		
@@ -91,14 +91,49 @@ struct MVDExporter (
 	-- Export the render component
 	fn exportRender jwrite obj = (
 		
-		if superclassof obj == GeometryClass then (
-			
+		-- Checking if object is a mesh.
+		--
+		if superclassof obj == GeometryClass then 
+		(
 			obj = convertToPoly obj
 			comp_render = MVDJson()
 			
-			-- Export mesh
-			-- Export materials
-			-- TO-DO
+			if obj != undefined then  
+			(	
+				-- Export mesh
+				local meshMan = MeshManager()
+				local output_path = meshMan.exportItem obj mesh_path
+				comp_render.add "mesh" output_path
+				
+				-- Export the material/s
+				local matMan = MaterialManager()
+				matMan.gen_mat = gen_mat
+				matMan.gen_tex = gen_tex
+				
+				if classof obj.mat == StandardMaterial then (
+					local output_json = matMan.exportItem obj.mat mats_path
+					comp_render.add "materials" #(output_json)
+				)
+				else if obj.mat == multimaterial then 
+				(
+					local total_mats = #()
+					for m in obj.mat do (
+						local output_json = matMan.exportItem obj.mat mats_path
+						append total_mats output_json
+					)
+					
+					comp_render.add "materials" total_mats
+				)
+				else if obj.mat == physicalmaterial then 
+				(
+					-- I should call a different method from the material manager to export
+				)
+				else 
+				(
+					comp_render.add "materials" "data/assets/materials/mtl_default.mtl"
+				)
+			)
+
 			jwrite.add "render" comp_render
 		)
 	),
@@ -189,7 +224,7 @@ struct MVDExporter (
 		exportName entity obj
 		exportParent entity obj
 		exportTransform entity obj
-		--exportRender entity obj
+		exportRender entity obj
 		--exportLight entity obj 
 		--exportCollider entity obj
 		
