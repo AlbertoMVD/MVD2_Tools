@@ -60,7 +60,7 @@ struct MVDExporter (
 	),
 	
 	-- Export the entity prefab
-	fn exportPrefab jwrite obj = (
+	fn exportCompPrefab jwrite obj = (
 		
 		local f_name = getFilenameFile obj.filename 
 		local f_path = (prefabs_path + f_name + ".prefab")
@@ -84,7 +84,7 @@ struct MVDExporter (
 		local obj_rot = objtransform.rotationPart as Quat
 		local obj_scale = obj.scale * max2mvd
 		
-		comp_transform.add "translation" #(obj_pos.x, obj_pos.y, obj_pos.z)
+		comp_transform.add "translation" #(obj_pos.x as float , obj_pos.y as float, obj_pos.z as float)
 		comp_transform.add "rotation" #(obj_rot.x, obj_rot.y, obj_rot.z, obj_rot.w)
 		comp_transform.add "scale" #(obj_scale.x, obj_scale.y, obj_scale.z)
 
@@ -255,7 +255,7 @@ struct MVDExporter (
 		-- Export base components
 		exportName entity obj
 		exportTransform entity obj
-		exportPrefab entity obj
+		exportCompPrefab entity obj
 		
 		--fs.add "entity" entity
 		return entity
@@ -317,8 +317,14 @@ struct MVDExporter (
 			-- Loop through all the nodes
 			for obj in enodes do (
 				
-				-- for each node, export it as an entity
-				enode = exportEntity obj	
+				-- Export the mesh depending on the class type
+				if classof obj == XrefObject then ( -- this is a prefab
+					enode = exportEntityPrefab obj	
+				) else if classof obj == Line then ( -- this is a line
+					enode = exportEntityCurve obj	
+				) else ( -- this is a simple entity.
+					enode = exportEntity obj	
+				)
 				
 				append entities enode
 				eamount = eamount + 1
@@ -343,18 +349,45 @@ struct MVDExporter (
 		-- Create and set the necessary directories
 		setDirectories epath
 		item_path = epath + prefabs_path + item_name + ".prefab"
+		parent_path = prefabs_path + getfilenamepath (trimRight item_name "\\/")
 		
-		-- Export an object as a single prefab
-		-- TO-DO
+		-- Loop through the nodes and export them
+		(
+			local eamount = 0
+			local entities = #()
+			local enode = undefined
+			for obj in enodes do (
+				
+				append entities (exportEntity obj)	
+				eamount = eamount + 1
+				eprg.value = (eamount / enodes.count) * 100
+			)	
+		)
+		
+		-- Reset everything and save data
+		(
+			select enodes
+			
+			-- Write data to disk
+			fs.add "prefab" item_name
+			fs.add "entities" entities
+			fs.writeDisk item_path
+			messageBox ("Prefab SUCCESFULLY exported at location: \n\n" + item_path)	
+		)
 	),
 	
 	-- Method to export a single mesh object
 	fn exportMesh enodes epath eprg = (
 		
 		-- Create and set the necessary directories
-		-- Export an object as a single mesh
-		-- TO-DO
-
+		setDirectories epath
+		item_path = epath + mesh_path + item_name + ".mesh"
+		parent_path = mesh_path + getfilenamepath (trimRight item_name "\\/")
+		
+		mesh_exporter = MeshManager()
+		mesh_exporter.exportItem enodes[1] (project_path + mesh_path + item_name + ".obj")
+		eprg.value = 100
+		
 		messageBox ("Mesh SUCCESFULLY exported at location: \n\n" + item_path)	
 	),
 	
@@ -379,13 +412,13 @@ struct MVDExporter (
 				exportWorld enodes epath eprg
 			)
 			2: ( -- Prefab
-				--exportPrefab enodes epath eprg
+				exportPrefab enodes epath eprg
 			)
 			3: ( -- Mesh
-				--exportMesh enodes epath eprg
+				exportMesh enodes epath eprg
 			)
 			3: ( -- Curve
-				--exportCurve enodes epath eprg
+				exportCurve enodes epath eprg
 			) -- More to be added
 			default: exportWorld enodes epath eprg
 		)

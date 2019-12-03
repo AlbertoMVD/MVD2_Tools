@@ -1,0 +1,16 @@
+{
+	"prefab": "teapot_prefab",
+	"entities": [{
+			"name": "Teapot001",
+			"transform": {
+				"translation": [0.00.00.0],
+				"rotation": [0.707107, 0.0, 0.0, 0.707107],
+				"scale": [1.0, 1.0, -1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Teapot001.obj",
+				"materials": "data/assets/materials/mtl_default.mtl"
+			}
+		}
+	]
+}
