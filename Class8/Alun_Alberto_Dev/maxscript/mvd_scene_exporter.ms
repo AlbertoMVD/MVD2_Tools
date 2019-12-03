@@ -13,6 +13,10 @@ global tex_path = base_path + "textures/"
 global curve_path = base_path + "curves/"   
 global project_path = ""
 
+-- Global transformation matrices needed
+global MaxToMVD = rotateXMatrix  -90
+global MaxToMVD2 = rotateXMatrix  90
+
 -- Exporter class used to export scenes into the engine
 struct MVDExporter (
 	
@@ -172,20 +176,43 @@ struct MVDExporter (
 	-- Component to set the collider properties of the given object
 	fn exportCollider jwrite obj emesh:false = (
 		
-		-- Check if children has collider component
+	-- Check if children has collider component
 		-- Method to work with convex and triangle mesh data
-		-- Export the collider as a mesh
-		-- TO-DO
-
-		-- Export the collider properties
-		-- TO-DO
+		if gen_col and obj.children.count > 0 then (
+			if obj.children[0].layer.name == layer_colliders then (
+				return exportCollider jwrite obj.children[1] true
+			)
+		)
 		
+		c_values = retrieveComponent obj component_collider
 		
-		comp_collider = MVDJson()
+		if  c_values != undefined then (
+	
+			comp_collider = MVDJson()
 			
-		-- Export the collider 
-		jwrite.add "collider" comp_collider
+			-- In case, the mesh is formed 
+			if emesh == true then (
+				collider_exporter = ColliderManager()
+				collider_exporter.exportItem obj 
+				comp_collider.add "type" "mesh"
+				comp_collider.add "file" (cols_path + obj.name + ".collider")
+			) else (
+				comp_collider.add "type" "box"
+			)
 			
+			bb = nodeGetBoundingBox obj obj.transform
+			comp_collider.add "group" c_values.col_group
+			comp_collider.add "mask" c_values.col_mask
+			comp_collider.add "center" ((obj.center - obj.pivot) * MaxToMVD)
+			comp_collider.add "halfwidth" (.5 * (bb[2] - bb[1]) * MaxToMVD)
+			comp_collider.add "trigger" c_values.is_trigger
+			comp_collider.add "dynamic" c_values.is_dynamic
+			comp_collider.add "controller" c_values.is_controller	
+			comp_collider.add "gravity" c_values.is_gravity
+			
+			-- Export the collider 
+			jwrite.add "collider" comp_collider
+		)
 	),
 	
 	-- Custom component, tag
@@ -245,13 +272,14 @@ struct MVDExporter (
 		exportTransform entity obj
 		exportRender entity obj
 		exportLight entity obj 
-		--exportCollider entity obj
+		exportCollider entity obj
 		
 		-- Export custom components
 		-- Add other custom components you need here!
 		
 		-- ExportTag component to be the last component to be exported.
 		--exportTag entity obj
+		
 		--fs.add "entity" entity
 		return entity
 	),

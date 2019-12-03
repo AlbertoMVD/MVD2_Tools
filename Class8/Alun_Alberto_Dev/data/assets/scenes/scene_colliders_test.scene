@@ -1,0 +1,26 @@
+{
+	"entities": [{
+			"name": "Teapot001",
+			"transform": {
+				"translation": [-19.2544, 0.0, -1.33002],
+				"rotation": [0.707107, 0.0, 0.0, 0.707107],
+				"scale": [1.0, 1.0, -1.0]
+			},
+			"render": {
+				"mesh": "data/assets/meshes/Teapot001.obj",
+				"materials": "data/assets/materials/mtl_default.mtl"
+			},
+			"collider": {
+				"type": "box",
+				"group": "All",
+				"mask": "",
+				"center": ,
+				"halfwidth": ,
+				"trigger": ,
+				"dynamic": ,
+				"controller": ,
+				"gravity":
+			}
+		}
+	]
+}

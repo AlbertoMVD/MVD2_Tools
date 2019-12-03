@@ -1,9 +1,12 @@
 -- We can include files using filein 
+filein "mvd_components.ms"
 filein "mvd_utility_managers.ms"
 filein "mvd_scene_exporter.ms"
+filein "mvd_utils.ms"
 
 gc()
 clearListener()
+
 man_collider = ColliderManager() -- Selection utility tool manager
 man_selection = SelectionManager() -- Selection utility tool manager
 --------------------------------------------------------------------------------------------------------------
@@ -162,6 +165,7 @@ rollout SBUtils "Utils Tools" width:469 height:263
 	
 	-- Generate colliders for selected objects
 	on btn30 pressed do (
+
 		for obj in selection do (
 			man_collider.generateType obj ddl3.selection
 		)
@@ -169,9 +173,21 @@ rollout SBUtils "Utils Tools" width:469 height:263
 	
 	-- Generate colliders for all objects
 	on btn31 pressed do (
+		man_collider = ColliderManager() -- Selection utility tool manager
 		for obj in rootScene.world.children do (
 			man_collider.generateType obj ddl3.selection
 		)
+	)
+	
+	-- Add component to selection
+	on btn3 pressed do (
+		addComponent (selection as array) ddl2.selected
+	)
+	
+	-- Add component to all scene objects
+	on btn7 pressed do (
+		-- In case that you have a children (convex or triangle) remove the children object
+		removeComponent (selection as array) ddl2.selected
 	)
 )
 

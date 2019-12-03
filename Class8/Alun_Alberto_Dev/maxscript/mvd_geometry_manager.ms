@@ -4,8 +4,9 @@ Contains three classes
 	Material Manager, to export all material info and maps into material file
 	Collider Manager, to generate colliders depending on our needs.
 */
---filein "mvd_json_exporter.ms"
---filein "mvd_utils.ms"
+filein "mvd_json_exporter.ms"
+filein "mvd_components.ms"
+filein "mvd_utils.ms"
 
 -- Determine geometry layer names and other definitions in this file header
 global layer_colliders = "colliders"
@@ -119,32 +120,54 @@ struct MaterialManager (
 -- Used to generate collider meshes and types
 struct ColliderManager 
 (	
-	-- TO-DO
-	-- Class that generates colliders and exports them.
-	
+	-- Basic mesh generation
 	fn generateBasic obj = (
 		
-		
+		addComponent obj "collider"
 	),
 	
+	
+	-- Convex mesh generation
 	fn generateConvex obj = (
 		
+		col_layer = getLayerByName layer_colliders
 		
+		local cvx_hull = nvpx.CreateConvexHull obj.mesh 100 0
+		local cloned_mesh = box name:"cloned_collider"
+		local conv_obj = convertToMesh cloned_mesh
+		cloned_mesh.mesh = cvx_hull
+		cloned_mesh.rotation = obj.rotation
+		cloned_mesh.pos = obj.pos
+		cloned_mesh.name = "collider_" + obj.name
+		cloned_mesh.parent = obj
+		
+		col_layer.addnode cloned_mesh
+		addComponent obj "collider"
 	),
 	
+	
+	-- Triangle mesh generation
 	fn generateTriangle obj = (
 		
+		col_layer = getLayerByName layer_colliders
+		cloned_mesh = copy obj
+		cloned_mesh.rotation = obj.rotation
+		cloned_mesh.pos = obj.pos
+		cloned_mesh.name = "collider_" + obj.name
+		cloned_mesh.parent = obj
 		
+		col_layer.addnode cloned_mesh
+		addComponent obj "collider"
 	),
 	
 	-- Create collider of a given type for the object passed 
 	fn generateType obj type = (
 		
 		case type of
-		{
+		(
 			1: generateBasic obj
 			2: generateConvex obj
 			3: generateTriangle obj
-		}
+		)
 	)
 )
