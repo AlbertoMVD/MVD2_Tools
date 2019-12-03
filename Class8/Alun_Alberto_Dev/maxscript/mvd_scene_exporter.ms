@@ -106,7 +106,7 @@ struct MVDExporter (
 			(	
 				-- Export mesh
 				local meshMan = MeshManager()
-				local output_path = meshMan.exportItem obj mesh_path
+				local output_path = meshMan.exportItemBinary obj (project_path + mesh_path)
 				comp_render.add "mesh" output_path
 				
 				-- Export the material/s

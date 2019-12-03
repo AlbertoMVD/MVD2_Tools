@@ -338,7 +338,13 @@ int Parsers::parseEntity(rapidjson::Value & entity, GraphicsSystem & graphics_sy
 
     if (entity.HasMember("prefab")) {
 
-        // TO-DO
+        // Change this in the future to handle prefabs.
+        //std::ifstream json_file(entity["prefab"].GetString());
+        //rapidjson::IStreamWrapper json_stream(json_file);
+        //rapidjson::Document json;
+        //json.ParseStream(json_stream);
+
+        //ent_id = parseEntity(json["entity"], graphics_system);
     }
 
     //load transform component, mandatory field
