@@ -4,7 +4,7 @@ filein "mvd_scene_exporter.ms"
 
 gc()
 clearListener()
-
+man_collider = ColliderManager() -- Selection utility tool manager
 man_selection = SelectionManager() -- Selection utility tool manager
 --------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
@@ -148,7 +148,31 @@ rollout SBExport "Export Tools" width:474 height:266
 -- Utils Tools
 rollout SBUtils "Utils Tools" width:469 height:263
 (
-
+	dropdownList 'ddl3' "" pos:[91,39] width:93 height:21 items:#("basic", "convex", "mesh") align:#left
+	label 'lbl3' "Type" pos:[63,42] width:29 height:17 align:#left
+	GroupBox 'grp11' "Collider Generator" pos:[9,9] width:453 height:108 align:#left
+	button 'btn30' "Generate Selection" pos:[249,40] width:155 height:20 align:#left
+	button 'btn31' "Generate All" pos:[249,73] width:155 height:20 align:#left
+	
+	GroupBox 'grp5' "Component Generator" pos:[8,130] width:453 height:107 align:#left
+	dropdownList 'ddl2' "" pos:[93,162] width:93 height:21 items:#("tag", "collider", "prefab", "technique", "audio", "particles", "rotator", "neon") align:#left
+	label 'lbl4' "Type" pos:[63,164] width:29 height:17 align:#left
+	button 'btn3' "Generate Selection" pos:[247,163] width:156 height:20 align:#left	
+	button 'btn7' "Remove Selection" pos:[247,197] width:156 height:20 align:#left
+	
+	-- Generate colliders for selected objects
+	on btn30 pressed do (
+		for obj in selection do (
+			man_collider.generateType obj ddl3.selection
+		)
+	)
+	
+	-- Generate colliders for all objects
+	on btn31 pressed do (
+		for obj in rootScene.world.children do (
+			man_collider.generateType obj ddl3.selection
+		)
+	)
 )
 
 -- Build a rollout that can be floated

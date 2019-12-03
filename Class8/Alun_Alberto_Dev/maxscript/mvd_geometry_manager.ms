@@ -117,8 +117,34 @@ struct MaterialManager (
 
 -- Collider manager
 -- Used to generate collider meshes and types
-/*struct ColliderManager 
+struct ColliderManager 
 (	
 	-- TO-DO
 	-- Class that generates colliders and exports them.
-)*/
+	
+	fn generateBasic obj = (
+		
+		
+	),
+	
+	fn generateConvex obj = (
+		
+		
+	),
+	
+	fn generateTriangle obj = (
+		
+		
+	),
+	
+	-- Create collider of a given type for the object passed 
+	fn generateType obj type = (
+		
+		case type of
+		{
+			1: generateBasic obj
+			2: generateConvex obj
+			3: generateTriangle obj
+		}
+	)
+)
