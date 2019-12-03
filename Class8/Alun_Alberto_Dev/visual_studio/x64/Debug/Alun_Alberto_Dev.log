@@ -1,0 +1,3 @@
+﻿  Parsers.cpp
+d:\users\vostek\documents\mvd2019\mvd2_tools\class8\alun_alberto_dev\src\parsers.cpp(289): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+  Alun_Alberto_Dev.vcxproj -> D:\Users\Vostek\Documents\MVD2019\MVD2_Tools\Class8\Alun_Alberto_Dev\visual_studio\..\Alun_Alberto_Dev.exe
