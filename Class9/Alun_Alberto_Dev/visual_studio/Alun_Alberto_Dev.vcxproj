@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\CollisionSystem.cpp" />
+    <ClCompile Include="..\src\Components.cpp" />
     <ClCompile Include="..\src\DebugSystem.cpp" />
     <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\GraphicsSystem.cpp" />

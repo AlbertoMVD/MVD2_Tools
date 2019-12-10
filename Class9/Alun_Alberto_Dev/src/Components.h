@@ -47,6 +47,10 @@ struct Transform : public Component, public lm::mat4 {
         }
         else return *this;
     }
+
+    void Save(rapidjson::Document& json, rapidjson::Value & entity);
+    void Load(rapidjson::Value & entity, int ent_id);
+    void debugRender();
 };
 
 // Mesh Component
@@ -55,6 +59,10 @@ struct Transform : public Component, public lm::mat4 {
 struct Mesh : public Component {
     int geometry;
     int material;
+
+    void Save(rapidjson::Document& json, rapidjson::Value & entity);
+    void Load(rapidjson::Value & entity, int ent_id);
+    void debugRender();
 };
 
 
@@ -107,6 +115,10 @@ struct Camera : public Component {
 //Later will be developed extensively
 struct Light : public Component {
     lm::vec3 color;
+
+    void Save(rapidjson::Document& json, rapidjson::Value & entity);
+    void Load(rapidjson::Value & entity, int ent_id);
+    void debugRender();
 };
 
 enum ColliderType {
@@ -140,6 +152,10 @@ struct Collider : public Component {
         colliding = false; // not colliding
         other = -1; //no other collider
     }
+
+    void Save(rapidjson::Document& json, rapidjson::Value & entity);
+    void Load(rapidjson::Value & entity, int ent_id);
+    void debugRender();
 };
 
 /**** COMPONENT STORAGE ****/
@@ -181,5 +197,7 @@ struct Entity {
     Entity(std::string a_name) : name(a_name) {
         for (int i = 0; i < NUM_TYPE_COMPONENTS; i++) { components[i] = -1;}
     }
+
+    void Save(rapidjson::Document& json, rapidjson::Value & entity);
 };
 

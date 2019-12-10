@@ -118,6 +118,15 @@ struct EntityComponentStore {
         return entities[entity_id].components[type_index];
     }
     
+    // Adding the template to update components
+    template<std::size_t I = 0, typename... Tp>
+    inline typename std::enable_if < I < sizeof...(Tp), void>::type
+        updateComponents(std::tuple<Tp...>& t, float dt)
+    {
+        for (auto& c : std::get<I>(t))
+            c.update(dt);
+    }
+
     //returns a const (i.e. non-editable) reference to vector of Type
     //i.e. array will not be editable
     template<typename T>
