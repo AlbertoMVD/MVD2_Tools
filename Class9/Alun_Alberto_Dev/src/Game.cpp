@@ -8,9 +8,14 @@
 #include "Shader.h"
 #include "extern.h"
 #include "Parsers.h"
+#include "render/RenderToTexture.h"
+
+Game* Game::game_instance = nullptr;
 
 Game::Game() {
 
+    assert(game_instance == nullptr);
+    game_instance = this;
 }
 
 int createFree(float aspect, ControlSystem& sys) {
@@ -31,13 +36,14 @@ int createFree(float aspect, ControlSystem& sys) {
 }
 
 //Nothing here yet
-void Game::init() {
+void Game::init(int window_width, int window_height) {
 
 	//******* INIT SYSTEMS *******
 
 	//init systems except debug, which needs info about scene
 	control_system_.init();
 	graphics_system_.init(window_width_, window_height_);
+    editor_system_.Init();
 
     //******** AUTOMATIC LOADING **********//
     
@@ -81,6 +87,8 @@ void Game::init() {
     //******* INIT DEBUG SYSTEM *******
     debug_system_.init();
     debug_system_.setActive(true);
+
+    main_buffer = new RenderToTexture("main_buffer", window_width, window_height);
 }
 
 //Entry point for game update code
@@ -100,8 +108,25 @@ void Game::update(float dt) {
     //debug
     debug_system_.update(dt);
 
+    // Rendering modules
+    {
+        if (editor_system_.GetEditorStatus()) {
+            main_buffer->Activate();
+            graphics_system_.update(dt);
+            debug_system_.update(dt);
+            main_buffer->Deactivate();
+        }
+        else {
+            graphics_system_.update(dt);
+            debug_system_.update(dt);
+        }
+    }
+
     // Components
     ECS.update(dt);
+
+    // Editor window
+    editor_system_.update(dt);
    
 }
 //update game viewports

@@ -34,7 +34,12 @@
     <ClCompile Include="..\src\linmath.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Parsers.cpp" />
+    <ClCompile Include="..\src\render\RenderToTexture.cpp" />
     <ClCompile Include="..\src\Shader.cpp" />
+    <ClCompile Include="..\src\tools\ConsoleModule.cpp" />
+    <ClCompile Include="..\src\tools\EditorGraphModule.cpp" />
+    <ClCompile Include="..\src\tools\EditorSystem.cpp" />
+    <ClCompile Include="..\src\tools\EditorUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\CollisionSystem.h" />
@@ -56,7 +61,13 @@
     <ClInclude Include="..\src\ControlSystem.h" />
     <ClInclude Include="..\src\linmath.h" />
     <ClInclude Include="..\src\Parsers.h" />
+    <ClInclude Include="..\src\render\RenderToTexture.h" />
     <ClInclude Include="..\src\Shader.h" />
+    <ClInclude Include="..\src\tools\ConsoleModule.h" />
+    <ClInclude Include="..\src\tools\dirent.h" />
+    <ClInclude Include="..\src\tools\EditorGraphModule.h" />
+    <ClInclude Include="..\src\tools\EditorSystem.h" />
+    <ClInclude Include="..\src\tools\EditorUtils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

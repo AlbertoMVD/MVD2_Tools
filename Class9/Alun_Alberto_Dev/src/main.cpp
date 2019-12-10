@@ -7,6 +7,9 @@
 #include "extern.h"
 #include "Game.h"
 
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 768
+
 //initialise GAME point for use in this file
 Game* GAME = nullptr;
 //initialise global ECS. By including extern.h in any cpp file (NOT .h file!) we can access this variable
@@ -111,8 +114,8 @@ int main(void)
 
 	//create game singleton and initialise it
 	GAME = new Game();
-	GAME->init();
-	GAME->update_viewports(800, 600);
+	GAME->init(WINDOW_WIDTH, WINDOW_HEIGHT);
+	GAME->update_viewports(WINDOW_WIDTH, WINDOW_HEIGHT);
 	//stores difference in time between each frame
 	float dt = 0.0f;
 	double curr_time = 0.0, prev_time = glfwGetTime();

@@ -27,6 +27,21 @@
     <ClCompile Include="..\src\imgui_widgets.cpp">
       <Filter>imGUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\render\RenderToTexture.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\ConsoleModule.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\EditorGraphModule.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\EditorSystem.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tools\EditorUtils.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Components.h" />
@@ -64,10 +79,34 @@
     <ClInclude Include="..\src\imstb_truetype.h">
       <Filter>imGUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\render\RenderToTexture.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\ConsoleModule.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\dirent.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\EditorGraphModule.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\EditorSystem.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools\EditorUtils.h">
+      <Filter>tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="imGUI">
       <UniqueIdentifier>{a0c9426e-ece1-4d79-8366-b2f1b898acfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{0b57a1b7-ce4e-420c-aeed-084c2e9b2b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{dd46b786-8ded-428c-a1c5-5b6c2d9d8918}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
