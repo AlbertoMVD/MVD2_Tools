@@ -227,8 +227,24 @@ struct MVDExporter (
 		jwrite.add "tags" #("")
 	),
 	
-		-- Add any other necessary custom components here...
-	
+	-- Add any other necessary custom components here...
+	fn exportRotator jwrite obj = (
+		
+		c_values = retrieveComponent obj component_rotator
+
+		if  c_values != undefined then (
+			
+			local axis = [1,0,0]
+			if c_values.cmp_rot.rot_axis.selection == 1 then ( axis = [1,0,0] )
+			if c_values.cmp_rot.rot_axis.selection == 2 then ( axis = [0,1,0] )
+			if c_values.cmp_rot.rot_axis.selection == 3 then ( axis = [0,0,1] )
+			
+			comp_spline = MVDJson()
+			comp_spline.add "speed" (c_values.rot_speed as float)
+			comp_spline.add "axis" axis
+			jwrite.add "rotator" comp_spline
+		)
+	),
 	
 	------------------------------------------------------------
 	------------------------------------------------------------
@@ -256,6 +272,7 @@ struct MVDExporter (
 		exportName entity obj
 		exportTransform entity obj
 		exportCompPrefab entity obj
+		exportRotator entity obj --export custom component rotator for prefabs.
 		
 		--fs.add "entity" entity
 		return entity
@@ -276,6 +293,7 @@ struct MVDExporter (
 		
 		-- Export custom components
 		-- Add other custom components you need here!
+		exportRotator entity obj -- export custom component rotator
 		
 		-- ExportTag component to be the last component to be exported.
 		--exportTag entity obj

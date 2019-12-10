@@ -37,6 +37,34 @@ struct MVDJson
 			return f_value as string
 		)
 		
+		if class_type == BooleanClass do(
+			format "%" value to:f_value
+			return f_value as string
+		)
+		
+		if class_type == Point3 do(
+			format "[%," value.x to:f_value
+			format "%," value.y to:f_value
+			format "%]" value.z to:f_value
+			return f_value as string
+		)
+		
+		if class_type == Point4 do(
+			format "[%," value.x to:f_value
+			format "%," value.y to:f_value
+			format "%," value.z to:f_value
+			format "%]" value.w to:f_value
+			return f_value as string
+		)
+		
+		if class_type == Quat do(
+			format "[%," value.x to:f_value
+			format "%," value.y to:f_value
+			format "%," value.z to:f_value
+			format "%]" value.w to:f_value
+			return f_value as string
+		)
+		
 		if class_type == float do(
 			format "%" value to:f_value
 			return f_value as string

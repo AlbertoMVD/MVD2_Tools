@@ -31,6 +31,25 @@ component_collider = attributes component_collider
 	)
 )
 
+-- Component rotator, used to define a rotaton behavior over time
+component_rotator = attributes component_rotator
+(
+	-- Collider parameters
+	parameters cmp_rot rollout:cmp_rot
+	(
+		rot_speed type: #string ui:rot_speed default:"1"
+		rot_axis type: #integer ui:rot_axis default:1
+	)
+	
+	-- Rollout UI of a rotator
+	rollout cmp_rot "Component Rotator" width:162 height:174
+	(
+		edittext 'rot_speed' "Speed" width:130 height:20 align:#center 
+		dropdownlist 'rot_axis' "Axis" items:#("X","Y","Z")
+		
+	)
+)
+
 
 -- Methods to create/destroy components
 

@@ -192,6 +192,7 @@ bool Parsers::parseBin(std::string filename, std::vector<float>& vertices, std::
         case magicSubGroups:
 
             // add subgroups here
+
             break;
 
         case magicEoF:
