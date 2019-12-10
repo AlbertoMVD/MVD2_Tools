@@ -237,6 +237,7 @@ void ConsoleModule::ExecCommand(const char* command_line)
     }
 }
 
+// /spawn enemy1 [1,0,0]
 void ConsoleModule::BuildCommand(const char* cmd)
 {
     std::string input = cmd;
@@ -248,6 +249,9 @@ void ConsoleModule::BuildCommand(const char* cmd)
     {
         // TO-DO 
         // Do some stuff in here
+        // Get the player
+        // Get the current position provided by the command
+
     }
     else {
         ConsoleWrite(false, "Unknown command: '%s'\n", cmd);

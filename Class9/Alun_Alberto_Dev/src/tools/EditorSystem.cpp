@@ -85,6 +85,7 @@ void EditorSystem::update(float dt)
                                                     ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBringToFrontOnFocus);
         ImGui::SetNextWindowBgAlpha(1);
         {
+            // Call the updates to render the UI window frames
             graph_module_->RenderGraph(&is_editor_mode);
             UpdateRender(dt);
             UpdateHierarchy(dt);
@@ -413,6 +414,7 @@ void EditorSystem::UpdateComponentMenu(float dt)
         {
             // TO-DO
             // Add here the functionality 
+
         }
         ImGui::End();
     }
@@ -424,7 +426,7 @@ void EditorSystem::AddComponentSelected(int id)
     int entity_id = ECS.getEntity(selected);
 
     switch (id) {
-
+        // TO-DO, DEPENDING ON COMPONENT SELECTED, ADD IT TO THE OBJECT
     }
 }
 

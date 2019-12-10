@@ -54,7 +54,7 @@ struct EntityComponentStore {
         debugRender<Mesh>(entity_id);
         debugRender<Light>(entity_id);
         debugRender<Collider>(entity_id);
-        //debugRender<Rotator>(entity_id);
+        debugRender<comp_rotator>(entity_id);
         //debugRender<Tag>(entity_id);
     }
 

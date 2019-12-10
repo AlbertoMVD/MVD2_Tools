@@ -89,6 +89,7 @@ void Transform::debugRender() {
             ImGui::TreePop();
         }
     }
+
     ImDrawList*   draw_list = ImGui::GetWindowDrawList();
     ImVec2 p = ImGui::GetCursorScreenPos();
     draw_list->AddLine(ImVec2(p.x - 9999, p.y), ImVec2(p.x + 9999, p.y), ImGui::GetColorU32(ImGuiCol_Border));
