@@ -91,6 +91,9 @@ void Game::update(float dt) {
 	//update input
 	control_system_.update(dt);
 
+    //collision
+    collision_system_.update(dt);
+
 	//render
 	graphics_system_.update(dt);
     

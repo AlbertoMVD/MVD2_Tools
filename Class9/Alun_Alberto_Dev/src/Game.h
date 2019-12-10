@@ -9,7 +9,7 @@
 #include "GraphicsSystem.h"
 #include "ControlSystem.h"
 #include "DebugSystem.h"
-
+#include "CollisionSystem.h"
 
 class Game
 {
@@ -34,6 +34,7 @@ private:
 	GraphicsSystem graphics_system_;
 	ControlSystem control_system_;
     DebugSystem debug_system_;
+    CollisionSystem collision_system_;
 
 	int window_width_;
 	int window_height_;

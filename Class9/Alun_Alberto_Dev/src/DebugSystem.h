@@ -14,11 +14,21 @@ private:
     bool draw_grid_;
     bool draw_icons_;
     bool draw_frustra_;
-    
+    bool draw_colliders_;
+
     //cube for frustra and boxes
     void createCube_();
     GLuint cube_vao_;
     
+    //colliders
+    void createRay_();
+    GLuint collider_ray_vao_;
+    GLuint collider_box_vao_;
+
+    //picking
+    bool can_fire_picking_ray_ = true;
+    int ent_picking_ray_;
+
     //icons
     void createIcon_();
     GLuint icon_vao_;

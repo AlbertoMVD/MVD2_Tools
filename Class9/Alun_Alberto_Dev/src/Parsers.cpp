@@ -338,13 +338,15 @@ int Parsers::parseEntity(rapidjson::Value & entity, GraphicsSystem & graphics_sy
 
     if (entity.HasMember("prefab")) {
 
-        // Change this in the future to handle prefabs.
+        /// In case of prefab entity, load the entity and then ignore it's default transform and name
         //std::ifstream json_file(entity["prefab"].GetString());
         //rapidjson::IStreamWrapper json_stream(json_file);
         //rapidjson::Document json;
         //json.ParseStream(json_stream);
 
-        //ent_id = parseEntity(json["entity"], graphics_system);
+        //// Add support for multiple entities in prefab
+        //ent_id = parseEntity(json["entities"][0], graphics_system);
+        //ECS.entities[ent_id].name = name;
     }
 
     //load transform component, mandatory field
@@ -417,7 +419,19 @@ int Parsers::parseEntity(rapidjson::Value & entity, GraphicsSystem & graphics_sy
         std::string coll_type = entity["collider"]["type"].GetString();
 
         if (coll_type == "box") {
-            //TO-DO When collider system ready
+
+            Collider& box_collider = ECS.createComponentForEntity<Collider>(ent_id);
+            box_collider.collider_type = ColliderTypeBox;
+
+            auto json_col_center = entity["collider"]["center"].GetArray();
+            box_collider.local_center.x = json_col_center[0].GetFloat();
+            box_collider.local_center.y = json_col_center[1].GetFloat();
+            box_collider.local_center.z = json_col_center[2].GetFloat();
+
+            auto json_col_halfwidth = entity["collider"]["halfwidth"].GetArray();
+            box_collider.local_halfwidth.x = json_col_halfwidth[0].GetFloat();
+            box_collider.local_halfwidth.y = json_col_halfwidth[1].GetFloat();
+            box_collider.local_halfwidth.z = json_col_halfwidth[2].GetFloat();
         }
     }
 

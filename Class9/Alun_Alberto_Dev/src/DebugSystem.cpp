@@ -29,6 +29,13 @@ void DebugSystem::init() {
     //create texture for light icon
 	icon_light_texture_ = Parsers::parseTexture("data/assets/textures/icon_light.tga");
 	icon_camera_texture_ = Parsers::parseTexture("data/assets/textures/icon_camera.tga");
+
+    //picking collider
+    ent_picking_ray_ = ECS.createEntity("picking_ray");
+    Collider& picking_ray = ECS.createComponentForEntity<Collider>(ent_picking_ray_);
+    picking_ray.collider_type = ColliderTypeRay;
+    picking_ray.direction = lm::vec3(0, 0, -1);
+    picking_ray.max_distance = 0.001f;
 }
 
 //draws debug information or not
@@ -88,8 +95,71 @@ void DebugSystem::update(float dt) {
                 glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
             }
         }    
+
+        if (draw_colliders_) {
+            //draw all colliders
+            auto& colliders = ECS.getAllComponents<Collider>();
+            for (auto& cc : colliders) {
+                //get transform for collider
+                Transform& tc = ECS.getComponentFromEntity<Transform>(cc.owner);
+                //get the colliders local model matrix in order to draw correctly
+                lm::mat4 collider_matrix = tc.getGlobalMatrix(ECS.getAllComponents<Transform>());
+
+                if (cc.collider_type == ColliderTypeBox) {
+
+                    //now move by the box by its offset
+                    collider_matrix.translateLocal(cc.local_center.x, cc.local_center.y, cc.local_center.z);
+                    //convert -1 -> +1 geometry to size of collider box
+                    collider_matrix.scaleLocal(cc.local_halfwidth.x, cc.local_halfwidth.y, cc.local_halfwidth.z);
+                    //set mvp
+                    lm::mat4 mvp = vp * collider_matrix;
+
+                    //set uniforms and draw
+                    glUniformMatrix4fv(u_mvp, 1, GL_FALSE, mvp.m);
+                    glUniform1i(u_color_mod, 2); //set color to index 2 (green)
+                    glBindVertexArray(cube_vao_); //CUBE
+                    glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+                }
+
+                if (cc.collider_type == ColliderTypeRay) {
+                    //ray natively goes from (0,0,0 to 0,0,1) (see definition in createRay_())
+                    //we need to rotate this vector so that it matches the direction specified by the component
+                    //to do this we first need to find angle and axis between the two vectors
+                    lm::vec3 buffer_vec(0, 0, 1);
+                    lm::vec3 dir_norm = cc.direction;
+                    dir_norm.normalize();
+                    float rotation_angle = acos(dir_norm.dot(buffer_vec));
+                    //if angle is PI, vector is opposite to buffer vec
+                    //so rotation axis can be anything (we set it to 0,1,0 vector
+                    lm::vec3 rotation_axis = lm::vec3(0, 1, 0);
+                    //otherwise, we calculate rotation axis with cross product
+                    if (rotation_angle < 3.14159f) {
+                        rotation_axis = dir_norm.cross(buffer_vec).normalize();
+                    }
+                    //now we rotate the buffer vector to
+                    if (rotation_angle > 0.00001f) {
+                        //only rotate if we have to
+                        collider_matrix.rotateLocal(rotation_angle, rotation_axis);
+                    }
+                    //apply distance scale
+                    collider_matrix.scaleLocal(cc.max_distance, cc.max_distance, cc.max_distance);
+                    //apply center offset
+                    collider_matrix.translateLocal(cc.local_center.x, cc.local_center.y, cc.local_center.z);
+
+                    //set uniforms
+                    lm::mat4 mvp = vp * collider_matrix;
+                    glUniformMatrix4fv(u_mvp, 1, GL_FALSE, mvp.m);
+                    //set color to index 2 (green)
+                    glUniform1i(u_color_mod, 3);
+
+                    //bind the cube vao
+                    glBindVertexArray(collider_ray_vao_);
+                    glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+                }
+            }
+        }
     }
-    
+
     if (draw_icons_) {
         //switch to icon shader
         glUseProgram(icon_shader_->program);
@@ -169,6 +239,30 @@ void DebugSystem::createIcon_() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(icon_uvs), icon_uvs, GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    //indices
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(icon_indices), icon_indices, GL_STATIC_DRAW);
+    //unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void DebugSystem::createRay_() {
+    //4th component is color
+    GLfloat icon_vertices[8]{ 0, 0, 0, 0,
+        0, 0, 1, 0 };
+    GLuint icon_indices[2]{ 0, 1 };
+    glGenVertexArrays(1, &collider_ray_vao_);
+    glBindVertexArray(collider_ray_vao_);
+    GLuint vbo;
+    //positions
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(icon_vertices), icon_vertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     //indices
     GLuint ibo;
     glGenBuffers(1, &ibo);

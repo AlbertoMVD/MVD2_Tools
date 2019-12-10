@@ -99,6 +99,39 @@ struct Light : public Component {
     lm::vec3 color;
 };
 
+enum ColliderType {
+    ColliderTypeBox,
+    ColliderTypeRay
+};
+
+//ColliderComponent. Only specifies size - collider location is given by any
+//associated TransformComponent
+// - collider_type is the type according to enum above
+// - local_center is offset from transform
+// - local_halfwidth is used for box,
+// - direction is used for ray
+// - max_distance is used to convert ray to segment
+struct Collider : public Component {
+    ColliderType collider_type;
+    lm::vec3 local_center; //offset from transform component
+    lm::vec3 local_halfwidth; // for box
+    lm::vec3 direction; // for ray
+    float max_distance; // for segment
+
+                        //collision state
+    bool colliding;
+    int other;
+    lm::vec3 collision_point;
+    float collision_distance;
+
+    Collider() {
+        local_halfwidth = lm::vec3(0.5, 0.5, 0.5); //default dimensions = 1 in each axis
+        max_distance = 10000000.0f; //infinite ray by default
+        colliding = false; // not colliding
+        other = -1; //no other collider
+    }
+};
+
 /**** COMPONENT STORAGE ****/
 
 //add new component type vectors here to store them in *ECS*
@@ -106,7 +139,8 @@ typedef std::tuple<
 std::vector<Transform>,
 std::vector<Mesh>,
 std::vector<Camera>,
-std::vector<Light>
+std::vector<Light>,
+std::vector<Collider>
 > ComponentArrays;
 
 //way of mapping different types to an integer value i.e.
@@ -117,8 +151,9 @@ template<> struct type2int<Transform> { enum { result = 0 }; };
 template<> struct type2int<Mesh> { enum { result = 1 }; };
 template<> struct type2int<Camera> { enum { result = 2 }; };
 template<> struct type2int<Light> { enum { result = 3 }; };
+template<> struct type2int<Collider> { enum { result = 4 }; };
 //UPDATE THIS!
-const int NUM_TYPE_COMPONENTS = 4;
+const int NUM_TYPE_COMPONENTS = 5;
 
 /**** ENTITY ****/
 
