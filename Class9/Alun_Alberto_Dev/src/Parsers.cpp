@@ -149,8 +149,75 @@ bool Parsers::parseOBJ(std::string filename, std::vector<float>& vertices, std::
 
 bool Parsers::parseBin(std::string filename, std::vector<float>& vertices, std::vector<float>& uvs, std::vector<float>& normals, std::vector<unsigned int>& indices)
 {
-    // TO-DO, Parse the binary file to load a mesh.
-    return false;
+    FILE* f = nullptr;
+    f = fopen(filename.c_str(), "rb");
+
+    //declare containers for temporary and final attributes
+    THeader header;
+    std::vector<float> temp_vtxs;
+
+    //parse file line by line
+    bool eof_found = false;
+
+    while (!eof_found) {
+
+        //split line string
+        TChunk chunk;
+        auto bytes_read = fread(&chunk, 1, sizeof(chunk), f);
+        assert(bytes_read == sizeof(chunk));
+
+        switch (chunk.magic_id) {
+
+        case magicHeader:
+
+            bytes_read = fread(&header, 1, chunk.num_bytes, f);
+            assert(bytes_read == chunk.num_bytes);
+            break;
+
+        case magicVtxs:
+
+            temp_vtxs.resize(chunk.num_bytes);
+            bytes_read = fread(temp_vtxs.data(), 1, chunk.num_bytes, f);
+            assert(bytes_read == chunk.num_bytes);
+            break;
+
+        case magicIdxs:
+
+            indices.resize(chunk.num_bytes);
+            bytes_read = fread(indices.data(), 1, chunk.num_bytes, f);
+            assert(bytes_read == chunk.num_bytes);
+            break;
+
+        case magicSubGroups:
+
+            // add subgroups here
+            break;
+
+        case magicEoF:
+
+            eof_found = true;
+            break;
+
+        default:
+            //printf("Unknown chunk data type %08x of %d bytes while reading file %s\n", chunk.magic_id, chunk.num_bytes, filename.c_str());
+            break;
+        }
+    }
+
+    // Replace this with an efficient system without hardcoded sizes!
+    int vertex_size = header.bytes_per_vtx / sizeof(float);
+
+    for (unsigned int i = 0; i < temp_vtxs.size() - vertex_size; i = i + vertex_size) {
+
+        vertices.insert(vertices.end(), { temp_vtxs[i], temp_vtxs[i + 1], temp_vtxs[i + 2] });
+        normals.insert(normals.end(), { temp_vtxs[i + 3], temp_vtxs[i + 4], temp_vtxs[i + 5] });
+        //uvs.insert(uvs.end(), { temp_vtxs[i + 6], temp_vtxs[i + 7] });
+        uvs.push_back(temp_vtxs[i + 6]);
+        uvs.push_back(temp_vtxs[i + 7]);
+    }
+
+    fclose(f);
+    return true;
 }
 
 // load uncompressed RGB targa file into an OpenGL texture

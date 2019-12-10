@@ -201,6 +201,20 @@ int GraphicsSystem::createGeometryFromFile(std::string filename) {
             return -1;
         }
     }
+    else if (ext == "mesh") {
+        //fill it with data from object
+        if (Parsers::parseBin(filename, vertices, uvs, normals, indices)) {
+
+            //generate the OpenGL buffers and create geometry
+            GLuint vao = generateBuffers_(vertices, uvs, normals, indices);
+            geometries_.emplace_back(vao, (GLuint)indices.size() / 3);
+            return (int)geometries_.size() - 1;
+        }
+        else {
+            std::cerr << "ERROR: Could not parse mesh file" << std::endl;
+            return -1;
+        }
+    }
     else {
         std::cerr << "ERROR: Unsupported mesh format when creating geometry" << std::endl;
         return -1;
