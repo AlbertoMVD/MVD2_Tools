@@ -161,6 +161,7 @@ struct Collider : public Component {
 };
 
 /**** COMPONENT STORAGE ****/
+struct comp_rotator;
 
 //add new component type vectors here to store them in *ECS*
 typedef std::tuple<
@@ -168,7 +169,8 @@ std::vector<Transform>,
 std::vector<Mesh>,
 std::vector<Camera>,
 std::vector<Light>,
-std::vector<Collider>
+std::vector<Collider>,
+std::vector<comp_rotator>
 > ComponentArrays;
 
 //way of mapping different types to an integer value i.e.
@@ -180,8 +182,9 @@ template<> struct type2int<Mesh> { enum { result = 1 }; };
 template<> struct type2int<Camera> { enum { result = 2 }; };
 template<> struct type2int<Light> { enum { result = 3 }; };
 template<> struct type2int<Collider> { enum { result = 4 }; };
+template<> struct type2int<comp_rotator> { enum { result = 5 }; };
 //UPDATE THIS!
-const int NUM_TYPE_COMPONENTS = 5;
+const int NUM_TYPE_COMPONENTS = 6;
 
 /**** ENTITY ****/
 

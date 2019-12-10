@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
+#include "components/comp_rotator.h"
 
 using namespace std;
 

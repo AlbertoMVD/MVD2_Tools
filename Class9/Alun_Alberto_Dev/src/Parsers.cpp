@@ -451,7 +451,6 @@ int Parsers::parseEntity(rapidjson::Value & entity, GraphicsSystem & graphics_sy
 
     // Add the light component
     if (entity.HasMember("light")) {
-        ;
 
         Light& light = ECS.createComponentForEntity<Light>(ent_id);
         light.Load(entity, ent_id);
@@ -460,6 +459,12 @@ int Parsers::parseEntity(rapidjson::Value & entity, GraphicsSystem & graphics_sy
     // Custom components here!
 
     // Parse custom components here
+    // Add the light component
+    if (entity.HasMember("rotator")) {
+
+        // Call rotator load method
+        // Parse his information and create the component.
+    }
 
     return ent_id;
 }

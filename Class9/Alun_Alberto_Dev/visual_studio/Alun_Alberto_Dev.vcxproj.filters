@@ -42,6 +42,11 @@
     <ClCompile Include="..\src\tools\EditorUtils.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CollisionSystem.cpp" />
+    <ClCompile Include="..\src\Components.cpp" />
+    <ClCompile Include="..\src\components\comp_rotator.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Components.h" />
@@ -97,6 +102,10 @@
     <ClInclude Include="..\src\tools\EditorUtils.h">
       <Filter>tools</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\CollisionSystem.h" />
+    <ClInclude Include="..\src\components\comp_rotator.h">
+      <Filter>components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="imGUI">
@@ -107,6 +116,9 @@
     </Filter>
     <Filter Include="render">
       <UniqueIdentifier>{dd46b786-8ded-428c-a1c5-5b6c2d9d8918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="components">
+      <UniqueIdentifier>{bc442fc9-bcd5-4b0c-8298-885e6285d445}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
