@@ -87,6 +87,22 @@ int main(void)
     glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+                                                                //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+                                                                //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
+                                                                //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+    io.ConfigWindowsMoveFromTitleBarOnly = true;
+
+    const char* glsl_version = "#version 330";
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui::StyleColorsDark();
+
     //variables storing mouse position
     double mouse_x, mouse_y;
     
@@ -133,6 +149,11 @@ int main(void)
 
 	//free game memory - not necessary but good practice!
 	delete GAME;
+
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     //terminate glfw and exit
     glfwTerminate();

@@ -25,6 +25,12 @@
     <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\GraphicsSystem.cpp" />
     <ClCompile Include="..\src\ControlSystem.cpp" />
+    <ClCompile Include="..\src\imgui.cpp" />
+    <ClCompile Include="..\src\imgui_demo.cpp" />
+    <ClCompile Include="..\src\imgui_draw.cpp" />
+    <ClCompile Include="..\src\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\src\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\src\imgui_widgets.cpp" />
     <ClCompile Include="..\src\linmath.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Parsers.cpp" />
@@ -38,6 +44,14 @@
     <ClInclude Include="..\src\Game.h" />
     <ClInclude Include="..\src\extern.h" />
     <ClInclude Include="..\src\GraphicsSystem.h" />
+    <ClInclude Include="..\src\imconfig.h" />
+    <ClInclude Include="..\src\imgui.h" />
+    <ClInclude Include="..\src\imgui_impl_glfw.h" />
+    <ClInclude Include="..\src\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\src\imgui_internal.h" />
+    <ClInclude Include="..\src\imstb_rectpack.h" />
+    <ClInclude Include="..\src\imstb_textedit.h" />
+    <ClInclude Include="..\src\imstb_truetype.h" />
     <ClInclude Include="..\src\includes.h" />
     <ClInclude Include="..\src\ControlSystem.h" />
     <ClInclude Include="..\src\linmath.h" />
