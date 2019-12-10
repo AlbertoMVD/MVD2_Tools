@@ -99,6 +99,9 @@ void Game::update(float dt) {
     
     //debug
     debug_system_.update(dt);
+
+    // Components
+    ECS.update(dt);
    
 }
 //update game viewports

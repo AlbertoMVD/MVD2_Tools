@@ -31,6 +31,21 @@ struct EntityComponentStore {
 			if (entities[i].name == name) return (int)i;
 		return -1;
 	}
+
+    //returns id of entity
+    void update(float dt) {
+
+        auto& meshes = getAllComponents<Mesh>();
+        auto& lights = getAllComponents<Light>();
+        auto& colliders = getAllComponents<Collider>();
+        //auto& rotators = getAllComponents<Rotator>();
+        //auto& tags = getAllComponents<Tag>();
+
+        for (auto& light : lights) light.update(dt);
+        for (auto& col : colliders) col.update(dt);
+        //for (auto& rot : rotators) rot.update(dt);
+        //for (auto& tag : tags) tag.update(dt);
+    }
     
     //creates a new component with no entity parent
     template<typename T>

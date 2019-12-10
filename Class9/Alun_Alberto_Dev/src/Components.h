@@ -17,13 +17,23 @@
 #pragma once
 #include "includes.h"
 #include <vector>
-
+#include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
 /**** COMPONENTS ****/
 
 //Component (base class)
 // - owner: id of Entity which owns the instance of the component
 struct Component {
     int owner;
+
+    // Data manipulation methods
+    void Load(rapidjson::Value & entity, int ent_id) {}
+    void Save(rapidjson::Document& json, rapidjson::Value & entity) {}
+
+    // debug methods to visualize results
+    void render() {}
+    void debugRender() {}
+    void update(float dt) {}
 };
 
 // Transform Component
