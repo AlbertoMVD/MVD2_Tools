@@ -49,7 +49,7 @@ void Game::init(int window_width, int window_height) {
     
     // load a shader into the graphics system
     // Be very careful, on loading extra shaders,needs more support.
-    graphics_system_.loadShader("phong", "data/shaders/phong.vert", "data/shaders/phong.frag");
+    //graphics_system_.loadShader("phong", "data/shaders/phong.vert", "data/shaders/phong.frag");
 
 	//Use this method to load an scene file we previously exported to our project
     Parsers::parseScene("data/assets/scenes/scene_test.scene", graphics_system_);
@@ -57,34 +57,35 @@ void Game::init(int window_width, int window_height) {
 	//******** MANUAL LOADING **********//
 
     //geometries
-    int teapot_geom_id = graphics_system_.createGeometryFromFile("data/assets/meshes/teapot_small.obj");
-    int plane_geom_id = graphics_system_.createPlaneGeometry();
+    //int teapot_geom_id = graphics_system_.createGeometryFromFile("data/assets/meshes/teapot_small.obj");
+    //int plane_geom_id = graphics_system_.createPlaneGeometry();
 
     //materials and textures
-    int default_mat_id = graphics_system_.createMaterial();
-    graphics_system_.getMaterial(default_mat_id).diffuse_map = Parsers::parseTexture("data/assets/textures/test.tga");
-    graphics_system_.getMaterial(default_mat_id).shader_id = graphics_system_.getShaderProgram("phong");
+    //int default_mat_id = graphics_system_.createMaterial();
+    //graphics_system_.getMaterial(default_mat_id).diffuse_map = Parsers::parseTexture("data/assets/textures/test.tga");
+    //graphics_system_.getMaterial(default_mat_id).shader_id = graphics_system_.getShaderProgram("phong");
 
     //******* CREATE OTHER ENTITIES AND ADD COMPONENTS *******//
-    int ent_teapot = ECS.createEntity("Teapot");
-    Mesh& tmc = ECS.createComponentForEntity<Mesh>(ent_teapot);
-    tmc.geometry = teapot_geom_id;
-    tmc.material = default_mat_id;
-    ECS.getComponentFromEntity<Transform>(ent_teapot).translate(0.0, -0.5, 0.0);
+    //int ent_teapot = ECS.createEntity("Teapot");
+    //Mesh& tmc = ECS.createComponentForEntity<Mesh>(ent_teapot);
+    //tmc.geometry = teapot_geom_id;
+    //tmc.material = default_mat_id;
+    //ECS.getComponentFromEntity<Transform>(ent_teapot).translate(0.0, -0.5, 0.0);
 
-    int ent_light1 = ECS.createEntity("Light 1");
-    ECS.createComponentForEntity<Light>(ent_light1);
-    ECS.getComponentFromEntity<Transform>(ent_light1).translate(10.0f, 5.0f, 10.0f);
-    ECS.getComponentFromEntity<Light>(ent_light1).color = lm::vec3(1.0f, 1.0f, 1.0f);
+    //int ent_light1 = ECS.createEntity("Light 1");
+    //ECS.createComponentForEntity<Light>(ent_light1);
+    //ECS.getComponentFromEntity<Transform>(ent_light1).translate(10.0f, 5.0f, 10.0f);
+    //ECS.getComponentFromEntity<Light>(ent_light1).color = lm::vec3(1.0f, 1.0f, 1.0f);
 
-    int ent_light2 = ECS.createEntity("Light 2");
-    ECS.createComponentForEntity<Light>(ent_light2);
-    ECS.getComponentFromEntity<Transform>(ent_light2).translate(-10.0f, -10.0f, 10.0f);
-    ECS.getComponentFromEntity<Light>(ent_light2).color = lm::vec3(0.5f, 0.5f, 1.0f);
+    //int ent_light2 = ECS.createEntity("Light 2");
+    //ECS.createComponentForEntity<Light>(ent_light2);
+    //ECS.getComponentFromEntity<Transform>(ent_light2).translate(-10.0f, -10.0f, 10.0f);
+    //ECS.getComponentFromEntity<Light>(ent_light2).color = lm::vec3(0.5f, 0.5f, 1.0f);
 
 	createFree((float)window_width_ / (float)window_height_, control_system_);
 
     //******* INIT DEBUG SYSTEM *******
+    graphics_system_.lateInit();
     debug_system_.init();
     debug_system_.setActive(true);
 

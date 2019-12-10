@@ -204,7 +204,7 @@ void EditorSystem::UpdateInspector(float dt)
         int entity_id = ECS.getEntity(selected);
 
         if (entity_id != -1) {
-            //ECS.renderEntity(entity_id);
+            ECS.renderEntity(entity_id);
 
             // Add a new component given by the user
             ImGui::PushItemWidth(-1);

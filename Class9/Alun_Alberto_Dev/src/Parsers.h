@@ -48,6 +48,12 @@ private:
                                 GraphicsSystem & graphics_system);
 
 public:
+
+    static std::unordered_map<std::string, int> geometries;
+    static std::unordered_map<std::string, int> textures;
+    static std::unordered_map<std::string, int> materials;
+    static std::unordered_map<std::string, int> shaders;
+
 	static bool parseOBJ(std::string filename, 
 						 std::vector<float>& vertices, 
 						 std::vector<float>& uvs, 

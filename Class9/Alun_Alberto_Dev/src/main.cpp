@@ -65,7 +65,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
     // Create a windowed mode window and its OpenGL context
-    window = glfwCreateWindow(800, 600, "Hello OpenGL!", NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "MVD Engine 2019", NULL, NULL);
     if (!window)
     {
         glfwTerminate();

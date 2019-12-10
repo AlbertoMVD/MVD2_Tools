@@ -47,6 +47,16 @@ struct EntityComponentStore {
         //for (auto& tag : tags) tag.update(dt);
     }
     
+    void renderEntity(int entity_id)
+    {
+        debugRender<Transform>(entity_id);
+        debugRender<Mesh>(entity_id);
+        debugRender<Light>(entity_id);
+        debugRender<Collider>(entity_id);
+        //debugRender<Rotator>(entity_id);
+        //debugRender<Tag>(entity_id);
+    }
+
     //creates a new component with no entity parent
     template<typename T>
     int createComponent(){
@@ -108,6 +118,23 @@ struct EntityComponentStore {
 		//return component from vector in tuple
 		return get<vector<T>>(components)[comp_index];
 	}
+
+    template<typename T>
+    T& getSafeComponentFromEntity(std::string entity_name) {
+        //get entity id
+        const int entity_id = getEntity(entity_name);
+        //get index for type
+        const int type_index = type2int<T>::result;
+        //get index for component
+        const int comp_index = entities[entity_id].components[type_index];
+
+        if (comp_index != -1)
+            return get<vector<T>>(components)[comp_index];
+        else {
+            T* t = new T{};
+            return *t;
+        }
+    }
     
     //return id of component in relevant array
     template<typename T>
@@ -125,6 +152,16 @@ struct EntityComponentStore {
     {
         for (auto& c : std::get<I>(t))
             c.update(dt);
+    }
+
+    //creates a new component with no entity parent
+    template<typename T>
+    void debugRender(int entity_id) {
+
+        if (getComponentID<T>(entity_id) != -1) {
+            T & comp = getComponentFromEntity<T>(entity_id);
+            comp.debugRender();
+        }
     }
 
     //returns a const (i.e. non-editable) reference to vector of Type

@@ -5,9 +5,10 @@
 #include "rapidjson/istreamwrapper.h"
 
 #include <unordered_map>
-std::unordered_map<std::string, int> geometries;
-std::unordered_map<std::string, int> textures;
-std::unordered_map<std::string, int> materials;
+std::unordered_map<std::string, int> Parsers::geometries;
+std::unordered_map<std::string, int> Parsers::textures;
+std::unordered_map<std::string, int> Parsers::materials;
+std::unordered_map<std::string, int> Parsers::shaders;
 
 void split(std::string to_split, std::string delim, std::vector<std::string>& result) {
 
@@ -359,6 +360,11 @@ bool Parsers::parseScene(std::string filename, GraphicsSystem & graphics_system)
     if (json.HasParseError()) std::cerr << "JSON format is not valid!" << std::endl;
     if (!json.HasMember("entities")) { std::cerr << "JSON file is incomplete! Needs entry: entities" << std::endl; return false; }
 
+    // Create a default shader by now
+    Shader* new_shader = graphics_system.loadShader("data/shaders/phong.vert", "data/shaders/phong.frag");
+    new_shader->name = "phong";
+    shaders["phong"] = new_shader->program;
+
     std::unordered_map<std::string, std::string> child_parent;
 
     for (rapidjson::SizeType i = 0; i < json["entities"].Size(); i++) {
@@ -400,118 +406,59 @@ int Parsers::parseEntity(rapidjson::Value & entity, GraphicsSystem & graphics_sy
     if (entity.HasMember("name"))
         name = entity["name"].GetString();
 
-    // Create the entity with the given name
-    int ent_id = ECS.createEntity(name);
-
+    int ent_id = -1;
     if (entity.HasMember("prefab")) {
-
         /// In case of prefab entity, load the entity and then ignore it's default transform and name
-        //std::ifstream json_file(entity["prefab"].GetString());
-        //rapidjson::IStreamWrapper json_stream(json_file);
-        //rapidjson::Document json;
-        //json.ParseStream(json_stream);
+        std::ifstream json_file(entity["prefab"].GetString());
+        rapidjson::IStreamWrapper json_stream(json_file);
+        rapidjson::Document json;
+        json.ParseStream(json_stream);
 
-        //// Add support for multiple entities in prefab
-        //ent_id = parseEntity(json["entities"][0], graphics_system);
-        //ECS.entities[ent_id].name = name;
+        // Add support for multiple entities in prefab
+        ent_id = parseEntity(json["entities"][0], graphics_system);
+        ECS.entities[ent_id].name = name;
+    }
+    else {
+        // Create the entity with the given name
+        ent_id = ECS.createEntity(name);
     }
 
     //load transform component, mandatory field
     if (entity.HasMember("transform")) {
 
-        //TO-DO
-        auto jt = entity["transform"]["translation"].GetArray();
-        auto jr = entity["transform"]["rotation"].GetArray();
-        auto js = entity["transform"]["scale"].GetArray();
-
-        // Set rotation, scale and translation
-        auto & ent_transform = ECS.getComponentFromEntity<Transform>(ent_id);
-        lm::mat4 R;
-        R.rotateLocal(jr[0].GetFloat() * DEG2RAD, lm::vec3(1, 0, 0));
-        R.rotateLocal(jr[1].GetFloat() * DEG2RAD, lm::vec3(0, 1, 0));
-        R.rotateLocal(jr[2].GetFloat() * DEG2RAD, lm::vec3(0, 0, 1));
-        ent_transform.set(ent_transform * R);
-        ent_transform.scaleLocal(js[0].GetFloat(), js[1].GetFloat(), js[2].GetFloat());
-        ent_transform.translate(jt[0].GetFloat(), jt[1].GetFloat(), jt[2].GetFloat());
+        auto& ent_transform = ECS.getComponentFromEntity<Transform>(ent_id);
+        ent_transform.Load(entity, ent_id);
     }
 
+    // Load render, geometry and materials
     if (entity.HasMember("render")) {
 
-        //TO-DO
-        auto jmesh = entity["render"]["mesh"].GetString();
-        auto jmaterials = entity["render"]["materials"].GetArray();
-        std::string matPath = jmaterials[0].GetString();
-
-        std::ifstream json_file(matPath);
-        rapidjson::IStreamWrapper json_stream(json_file);
-        rapidjson::Document json_material;
-        json_material.ParseStream(json_stream);
-
-        int mesh_id, material_id, texture_id;
-        if (geometries.find(jmesh) == geometries.end()) {
-            mesh_id = graphics_system.createGeometryFromFile(jmesh);
-            geometries[jmesh] = mesh_id;
-        }
-        else {
-            mesh_id = geometries[jmesh];
-        }
-
-        if (materials.find(matPath) == materials.end()) {
-            material_id = graphics_system.createMaterial();
-
-            // Parse the material information
-            std::string textPath = json_material["textures"]["diffuse"].GetString();
-
-            // Add support for other texture types.
-            if (textures.find(textPath) == textures.end()) {
-                texture_id = Parsers::parseTexture(textPath);
-                textures[textPath] = texture_id;
-            }
-
-            graphics_system.getMaterial(material_id).diffuse_map = texture_id;
-            graphics_system.getMaterial(material_id).shader_id = graphics_system.getShaderProgram("phong");
-            materials[matPath] = material_id;
-        }
-        else {
-            material_id = materials[matPath];
-        }
+        int geo_id = Geometry::Load(graphics_system, entity, ent_id);
+        int mat_id = Material::Load(graphics_system, entity, ent_id);
 
         Mesh& ent_mesh = ECS.createComponentForEntity<Mesh>(ent_id);
-        ent_mesh.geometry = mesh_id;
-        ent_mesh.material = material_id;
+        ent_mesh.geometry = geo_id;
+        ent_mesh.material = mat_id;
     }
 
+    // Load collider parameters
     if (entity.HasMember("collider")) {
 
-        std::string coll_type = entity["collider"]["type"].GetString();
-
-        if (coll_type == "box") {
-
-            Collider& box_collider = ECS.createComponentForEntity<Collider>(ent_id);
-            box_collider.collider_type = ColliderTypeBox;
-
-            auto json_col_center = entity["collider"]["center"].GetArray();
-            box_collider.local_center.x = json_col_center[0].GetFloat();
-            box_collider.local_center.y = json_col_center[1].GetFloat();
-            box_collider.local_center.z = json_col_center[2].GetFloat();
-
-            auto json_col_halfwidth = entity["collider"]["halfwidth"].GetArray();
-            box_collider.local_halfwidth.x = json_col_halfwidth[0].GetFloat();
-            box_collider.local_halfwidth.y = json_col_halfwidth[1].GetFloat();
-            box_collider.local_halfwidth.z = json_col_halfwidth[2].GetFloat();
-        }
+        Collider& collider = ECS.createComponentForEntity<Collider>(ent_id);
+        collider.Load(entity, ent_id);
     }
 
     // Add the light component
     if (entity.HasMember("light")) {
+        ;
 
-       auto lcolor = entity["light"]["color"].GetArray();
-
-       ECS.createComponentForEntity<Light>(ent_id);
-       ECS.getComponentFromEntity<Light>(ent_id).color = lm::vec3(lcolor[0].GetFloat(), lcolor[1].GetFloat(), lcolor[2].GetFloat());
+        Light& light = ECS.createComponentForEntity<Light>(ent_id);
+        light.Load(entity, ent_id);
     }
 
-    ///TODO- Add any other component loading here!
+    // Custom components here!
+
+    // Parse custom components here
 
     return ent_id;
 }

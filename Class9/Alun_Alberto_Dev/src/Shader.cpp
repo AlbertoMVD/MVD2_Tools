@@ -21,6 +21,74 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 Shader::Shader() {}
 
+//uniform setters
+//int
+bool Shader::setUniform(UniformID id, const int data) {
+    GLuint loc = getUniformLocation(id);
+    if (loc != -1) {
+        glUniform1i(loc, data);
+        return true;
+    }
+    return false;
+}
+//float
+bool Shader::setUniform(UniformID id, const float data) {
+    GLuint loc = getUniformLocation(id);
+    if (loc != -1) {
+        glUniform1f(loc, data);
+        return true;
+    }
+    return false;
+}
+
+//set vec3 array
+bool Shader::setUniform(UniformID id, const lm::vec3& data) {
+    GLuint loc = getUniformLocation(id);
+    if (loc != -1) {
+        glUniform3fv(loc, 1, data.value_);
+        return true;
+    }
+    return false;
+}
+
+//mat4 array
+bool Shader::setUniform(UniformID id, const lm::mat4& data) {
+    GLuint loc = getUniformLocation(id);
+    if (loc != -1) {
+        glUniformMatrix4fv(loc, 1, GL_FALSE, data.m);
+        return true;
+    }
+    return false;
+}
+//texture
+bool Shader::setTexture(UniformID id, GLuint tex_id, GLuint unit) {
+    //get texture id and bind it
+    glActiveTexture(GL_TEXTURE0 + unit);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    // tell sampler which slot its in
+    GLint loc = getUniformLocation(id);
+    if (loc != -1) {
+        glUniform1i(loc, unit);
+        return true;
+    }
+    return false;
+}
+//texture cube
+bool Shader::setTextureCube(UniformID id, GLuint tex_id, GLuint unit) {
+    //get texture id and bind it
+    glActiveTexture(GL_TEXTURE0 + unit);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, tex_id);
+    // tell sampler which slot its in
+    GLint loc = getUniformLocation(id);
+    if (loc != -1) {
+        glUniform1i(loc, unit);
+        return true;
+    }
+    return false;
+}
+
+
+
 std::string Shader::readFile(std::string filename) {
 	std::ifstream f(filename);
 	std::stringstream buffer;
@@ -137,8 +205,10 @@ void Shader::makeShaderProgram(GLuint vertexShaderID,GLuint fragmentShaderID)
     if (!link_ok) {
         fprintf(stderr, "glLinkProgram:");
         saveProgramInfoLog(program);
-    
     }
+    
+    //init uniforms
+    initUniforms_();
 }
 
 GLint Shader::bindAttribute(const char* attribute_name) {
@@ -150,11 +220,30 @@ GLint Shader::bindAttribute(const char* attribute_name) {
     else return attribute_ID;
 }
 
-GLint Shader::bindUniform(const char* uniform_name) {
-    GLint uniform_ID = glGetUniformLocation(program, uniform_name);
-    if (uniform_ID == -1) {
-        fprintf(stderr, "Could not bind uniform %s\n", uniform_name);
-        return 0;
-    }
-    else return uniform_ID;
+//first initializes uniform location vector, then maps uniform locations
+//to each id, using the 
+void Shader::initUniforms_() {
+    
+	//initialize uniform location vector to all -1 (not found) 
+	uniform_locations_ = std::vector<GLuint>(UNIFORMS_COUNT, -1);
+
+	//iterate map of all possible uniforms, asking shader if it has them
+	for (std::pair<std::string, UniformID> element : uniform_string2id_)
+	{
+		std::string uniform_name = element.first;
+		UniformID uniform_id = element.second;
+		uniform_locations_[uniform_id] = glGetUniformLocation(program, uniform_name.c_str());
+	}    
 }
+
+//Returns location of uniform with given enum
+GLuint Shader::getUniformLocation(UniformID name) {
+	return uniform_locations_[name];
+}
+
+
+
+
+
+
+

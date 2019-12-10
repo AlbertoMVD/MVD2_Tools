@@ -9,7 +9,37 @@
 
 void Transform::Save(rapidjson::Document& json, rapidjson::Value & entity)
 {
+    rapidjson::Value obj(rapidjson::kObjectType);
+    rapidjson::Document::AllocatorType& allocator = json.GetAllocator();
 
+    // Set translation
+    {
+        rapidjson::Value translation(rapidjson::kArrayType);
+        translation.PushBack(position().x, allocator);
+        translation.PushBack(position().y, allocator);
+        translation.PushBack(position().z, allocator);
+        obj.AddMember("translation", translation, allocator);
+    }
+
+    // Set rotation
+    {
+        rapidjson::Value translation(rapidjson::kArrayType);
+        translation.PushBack(m[8], allocator);
+        translation.PushBack(m[9], allocator);
+        translation.PushBack(m[10], allocator);
+        obj.AddMember("rotation", translation, allocator);
+    }
+
+    // Set scale
+    {
+        rapidjson::Value translation(rapidjson::kArrayType);
+        translation.PushBack(m[0], allocator);
+        translation.PushBack(m[5], allocator);
+        translation.PushBack(m[10], allocator);
+        obj.AddMember("scale", translation, allocator);
+    }
+
+    entity.AddMember("transform", obj, allocator);
 }
 
 void Transform::Load(rapidjson::Value & entity, int ent_id) {
@@ -31,21 +61,96 @@ void Transform::Load(rapidjson::Value & entity, int ent_id) {
 
 void Transform::debugRender() {
 
+    lm::vec3 pos = this->position();
+    lm::vec3 front = this->front();
+    float pos_array[3] = { pos.x, pos.y, pos.z };
+    float rot_array[3] = { m[8], m[9], m[10] };
+    float scal_array[3] = { m[0], m[5], m[10] };
 
+    ImGui::AddSpace(0, 5);
+    {
+        if (ImGui::TreeNode("Transform")) {
+            ImGui::AddSpace(0, 5);
+            if (ImGui::DragFloat3("Position", pos_array)) {
+                this->position(pos_array[0], pos_array[1], pos_array[2]);
+            }
+
+            if (ImGui::DragFloat3("Rotation", rot_array)) {
+                m[8] = rot_array[0];
+                m[9] = rot_array[1];
+                m[10] = rot_array[2];
+            }
+
+            if (ImGui::DragFloat3("Scale", scal_array)) {
+                m[0] = scal_array[0];
+                m[5] = scal_array[1];
+                m[10] = scal_array[2];
+            }
+            ImGui::TreePop();
+        }
+    }
+    ImDrawList*   draw_list = ImGui::GetWindowDrawList();
+    ImVec2 p = ImGui::GetCursorScreenPos();
+    draw_list->AddLine(ImVec2(p.x - 9999, p.y), ImVec2(p.x + 9999, p.y), ImGui::GetColorU32(ImGuiCol_Border));
 }
 
 
 void Mesh::Save(rapidjson::Document& json, rapidjson::Value & entity)
 {
+    rapidjson::Value obj(rapidjson::kObjectType);
+    rapidjson::Document::AllocatorType& allocator = json.GetAllocator();
 
+    std::string mesh_name = Game::get().getGraphicsSystem().geometries_[geometry].name;
+    std::string material_name = Game::get().getGraphicsSystem().getMaterial(material).name;
+    {
+        rapidjson::Value val(rapidjson::kObjectType);
+        val.SetString(mesh_name.c_str(), static_cast<rapidjson::SizeType>(mesh_name.length()), allocator);
+        obj.AddMember("mesh", val, allocator);
+
+        rapidjson::Value materials(rapidjson::kArrayType);
+        rapidjson::Value val2(rapidjson::kObjectType);
+        val2.SetString(material_name.c_str(), static_cast<rapidjson::SizeType>(material_name.length()), allocator);
+        materials.PushBack(val2, allocator);
+        obj.AddMember("materials", materials, allocator);
+    }
+
+    entity.AddMember("render", obj, allocator);
 }
 
 void Mesh::Load(rapidjson::Value & entity, int ent_id) {
- 
+
 }
 
 void Mesh::debugRender() {
 
+    ImGui::AddSpace(0, 5);
+
+    if (ImGui::TreeNode("Renderer")) {
+        ImGui::AddSpace(0, 5);
+        ImGui::Text("Mesh:");
+        ImGui::SameLine();
+        std::string mesh_name = Game::get().getGraphicsSystem().geometries_[geometry].name;
+        ImGui::Text(mesh_name.c_str());
+
+        ImGui::Unindent(8);
+        if (ImGui::TreeNode("Material")) {
+            ImGui::Text("File:");
+            ImGui::SameLine();
+            Material & mat = Game::get().getGraphicsSystem().getMaterial(material);
+            std::string material_name = mat.name;
+            ImGui::Text(material_name.c_str());
+            // TO-DO Debug material
+            ImGui::Image((ImTextureID)(mat.diffuse_map), ImVec2(64, 64));
+
+            ImGui::TreePop();
+        }
+
+        ImGui::TreePop();
+    }
+
+    ImDrawList*   draw_list = ImGui::GetWindowDrawList();
+    ImVec2 p = ImGui::GetCursorScreenPos();
+    draw_list->AddLine(ImVec2(p.x - 9999, p.y), ImVec2(p.x + 9999, p.y), ImGui::GetColorU32(ImGuiCol_Border));
 }
 
 //Light Component
@@ -67,7 +172,17 @@ void Light::Load(rapidjson::Value & entity, int ent_id) {
 
 void Light::debugRender() {
 
-
+    ImGui::AddSpace(0, 5);
+    {
+        if (ImGui::TreeNode("Light")) {
+            ImGui::AddSpace(0, 5);
+            ImGui::ColorPicker4("Color", &color.x);
+            ImGui::TreePop();
+        }
+    }
+    ImDrawList*   draw_list = ImGui::GetWindowDrawList();
+    ImVec2 p = ImGui::GetCursorScreenPos();
+    draw_list->AddLine(ImVec2(p.x - 9999, p.y), ImVec2(p.x + 9999, p.y), ImGui::GetColorU32(ImGuiCol_Border));
 }
 
 //ColliderComponent. Only specifies size - collider location is given by any
@@ -81,7 +196,21 @@ void Light::debugRender() {
 
 void Collider::Save(rapidjson::Document& json, rapidjson::Value & entity)
 {
+    rapidjson::Value obj(rapidjson::kObjectType);
+    rapidjson::Document::AllocatorType& allocator = json.GetAllocator();
 
+    {
+        obj.AddMember("type", "box", allocator);
+        obj.AddMember("group", "All", allocator);
+        obj.AddMember("mask", "", allocator);
+
+        obj.AddMember("trigger", false, allocator);
+        obj.AddMember("dynamic", false, allocator);
+        obj.AddMember("controller", false, allocator);
+        obj.AddMember("gravity", false, allocator);
+    }
+
+    entity.AddMember("collider", obj, allocator);
 }
 
 void Collider::Load(rapidjson::Value & entity, int ent_id) {
@@ -104,9 +233,59 @@ void Collider::Load(rapidjson::Value & entity, int ent_id) {
 
 void Collider::debugRender() {
 
-}
+    const char* items[] = { "Box" };
+    static const char* current_item = 0;
+    current_item = items[0];
 
+    ImGui::AddSpace(0, 5);
+    {
+        if (ImGui::TreeNode("Collider")) {
+            ImGui::AddSpace(0, 5);
+            if (ImGui::BeginCombo("Type", current_item))
+            {
+                for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+                {
+                    bool is_selected = (current_item == items[n]);
+                    if (ImGui::Selectable(items[n], is_selected))
+                        current_item = items[n];
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+
+            ImGui::DragFloat3("Center", &local_center.x);
+            ImGui::DragFloat3("Halfwidth", &local_halfwidth.x);
+            ImGui::TreePop();
+        }
+    }
+    ImDrawList*   draw_list = ImGui::GetWindowDrawList();
+    ImVec2 p = ImGui::GetCursorScreenPos();
+    draw_list->AddLine(ImVec2(p.x - 9999, p.y), ImVec2(p.x + 9999, p.y), ImGui::GetColorU32(ImGuiCol_Border));
+}
 void Entity::Save(rapidjson::Document& json, rapidjson::Value & entity) {
 
+    rapidjson::Document::AllocatorType& allocator = json.GetAllocator();
 
+    // Set name to the entity
+    {
+        rapidjson::Value val(rapidjson::kObjectType);
+        val.SetString(name.c_str(), static_cast<rapidjson::SizeType>(name.length()), allocator);
+        entity.AddMember("name", val, allocator);
+    }
+
+    ////entity["entities"][index]["name"] = name;
+    auto& transform = ECS.getSafeComponentFromEntity<Transform>(name);
+    auto& mesh = ECS.getSafeComponentFromEntity<Mesh>(name);
+    auto& light = ECS.getSafeComponentFromEntity<Light>(name);
+    auto& collider = ECS.getSafeComponentFromEntity<Collider>(name);
+    //auto& rotator = ECS.getSafeComponentFromEntity<Rotator>(name);
+    //auto& tag = ECS.getSafeComponentFromEntity<Tag>(name);
+
+    if (transform.index != 0) transform.Save(json, entity);
+    if (mesh.index != 0) mesh.Save(json, entity);
+    if (light.index != 0) light.Save(json, entity);
+    if (collider.index != 0) collider.Save(json, entity);
+    //if (rotator.index != 0) rotator.Save(json, entity);
+    //if (tag.index != 0) tag.Save(json, entity);
 }

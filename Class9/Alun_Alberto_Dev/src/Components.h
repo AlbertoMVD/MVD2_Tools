@@ -24,7 +24,9 @@
 //Component (base class)
 // - owner: id of Entity which owns the instance of the component
 struct Component {
+
     int owner;
+    int index = -1;
 
     // Data manipulation methods
     void Load(rapidjson::Value & entity, int ent_id) {}
