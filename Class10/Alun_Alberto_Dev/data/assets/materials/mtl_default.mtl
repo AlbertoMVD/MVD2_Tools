@@ -1,6 +1,6 @@
 {
-	"tech": "phong.tech",
+	"tech": "pbr.tech",
 	"textures": {
-		"diffuse": "data/assets/textures/default.png"
+		"diffuse": "data/assets/textures/block_teal.tga"
 	}
 }

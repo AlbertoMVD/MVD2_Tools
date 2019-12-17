@@ -39,12 +39,12 @@ struct EntityComponentStore {
         auto& meshes = getAllComponents<Mesh>();
         auto& lights = getAllComponents<Light>();
         auto& colliders = getAllComponents<Collider>();
-        //auto& rotators = getAllComponents<Rotator>();
+        auto& rotators = getAllComponents<comp_rotator>();
         //auto& tags = getAllComponents<Tag>();
 
         for (auto& light : lights) light.update(dt);
         for (auto& col : colliders) col.update(dt);
-        //for (auto& rot : rotators) rot.update(dt);
+        for (auto& rot : rotators) rot.update(dt);
         //for (auto& tag : tags) tag.update(dt);
     }
     

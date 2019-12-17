@@ -464,6 +464,7 @@ int Parsers::parseEntity(rapidjson::Value & entity, GraphicsSystem & graphics_sy
 
         // Call rotator load method
         // Parse his information and create the component.
+
     }
 
     return ent_id;

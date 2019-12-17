@@ -52,7 +52,7 @@ void Game::init(int window_width, int window_height) {
     //graphics_system_.loadShader("phong", "data/shaders/phong.vert", "data/shaders/phong.frag");
 
 	//Use this method to load an scene file we previously exported to our project
-    Parsers::parseScene("data/assets/scenes/scene_test.scene", graphics_system_);
+    Parsers::parseScene("data/assets/scenes/scene_whitebox2.scene", graphics_system_);
 
 	//******** MANUAL LOADING **********//
 
