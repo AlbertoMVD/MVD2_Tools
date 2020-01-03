@@ -80,16 +80,16 @@ struct MVDExporter (
 		-- Add support for relative coordinates (parent matrices)
 		local objtransform = obj.transform * max2mvd
 		
-		local obj_pos = obj.pos * max2mvd
-		local obj_rot = objtransform.rotationPart as Quat
-		local obj_scale = obj.scale * max2mvd
+		local mvd_pos = obj.transform.pos * max2mvd
+		local mvd_rot = ((QuatToEulerPoint obj.rotation) * max2mvd)
+		local mvd_scale = obj.transform.scale
 		
-		comp_transform.add "translation" #(obj_pos.x as float , obj_pos.y as float, obj_pos.z as float)
-		comp_transform.add "rotation" #(obj_rot.x, obj_rot.y, obj_rot.z, obj_rot.w)
-		comp_transform.add "scale" #(obj_scale.x, obj_scale.y, obj_scale.z)
-
+		comp_transform = MVDJson()
+		comp_transform.add "translation" mvd_pos
+		comp_transform.add "rotation" mvd_rot
+		comp_transform.add "scale" mvd_scale
+		
 		jwrite.add "transform" comp_transform
-
 	),
 	
 	-- Export the render component
@@ -106,7 +106,7 @@ struct MVDExporter (
 			(	
 				-- Export mesh
 				local meshMan = MeshManager()
-				local output_path = meshMan.exportItemBinary obj (project_path + mesh_path)
+				local output_path = meshMan.exportItemBinary obj (mesh_path)
 				comp_render.add "mesh" output_path
 				
 				-- Export the material/s
@@ -115,14 +115,14 @@ struct MVDExporter (
 				matMan.gen_tex = gen_tex
 				
 				if classof obj.mat == StandardMaterial then (
-					local output_json = matMan.exportItem obj.mat (project_path + mats_path)
+					local output_json = matMan.exportItem obj.mat (mats_path)
 					comp_render.add "materials" #(output_json)
 				)
 				else if obj.mat == multimaterial then 
 				(
 					local total_mats = #()
 					for m in obj.mat do (
-						local output_json = matMan.exportItem obj.mat (project_path + mats_path)
+						local output_json = matMan.exportItem obj.mat (mats_path)
 						append total_mats output_json
 					)
 					

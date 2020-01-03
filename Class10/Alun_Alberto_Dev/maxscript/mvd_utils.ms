@@ -36,6 +36,13 @@ fn getLayerByName lname = (
 	return layer
 )
 
+-- returns a point3 eulerangle given a quaternion
+fn QuatToEulerPoint rot = (
+	
+	local euler = (rot as eulerAngles)
+	return [euler.x, euler.y, euler.z]
+)
+
 -- Get all the materials that belong to a mesh
 fn getMaterialsUsedByMesh obj = (
 	
